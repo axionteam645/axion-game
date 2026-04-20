@@ -6,748 +6,795 @@
   <title>AXION Hammer Demo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg1: #060816;
-      --bg2: #0d1631;
-      --panel: rgba(10, 17, 35, 0.76);
-      --border: rgba(113, 188, 255, 0.22);
-      --text: #e8f3ff;
-      --muted: #8da9cc;
-      --cyan: #53d8ff;
-      --blue: #4b7bff;
-      --violet: #a05bff;
-      --green: #31d68b;
-      --yellow: #ffca57;
-      --red: #ff6b81;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    :root{
+      --bg:#050816;
+      --bg2:#0a1330;
+      --panel:rgba(9,16,34,.78);
+      --panel-2:rgba(14,22,44,.86);
+      --border:rgba(91,177,255,.20);
+      --text:#ebf5ff;
+      --muted:#8fa7c4;
+      --cyan:#53d8ff;
+      --blue:#4a7dff;
+      --violet:#a35cff;
+      --green:#33d98d;
+      --yellow:#ffc95e;
+      --red:#ff6f88;
+      --shadow:0 18px 55px rgba(0,0,0,.42);
     }
 
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; color: var(--text); background: radial-gradient(circle at top left, rgba(83,216,255,0.14), transparent 25%), radial-gradient(circle at top right, rgba(160,91,255,0.18), transparent 22%), linear-gradient(180deg, var(--bg2), var(--bg1)); min-height: 100%; }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      font-family:'Inter',sans-serif;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(83,216,255,.10), transparent 30%),
+        radial-gradient(circle at 85% 10%, rgba(163,92,255,.14), transparent 28%),
+        linear-gradient(180deg,var(--bg2),var(--bg));
+      color:var(--text);
+      min-height:100%;
+    }
 
-    body {
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
+    body{
+      min-height:100vh;
+      overflow-x:hidden;
+      position:relative;
     }
 
     .stars,
     .stars::before,
-    .stars::after {
-      content: "";
-      position: fixed;
-      inset: 0;
+    .stars::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
       background-image:
-        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.65), transparent 70%),
-        radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,.5), transparent 70%),
-        radial-gradient(2px 2px at 80% 68%, rgba(83,216,255,.5), transparent 70%),
-        radial-gradient(1px 1px at 34% 78%, rgba(255,255,255,.45), transparent 70%),
-        radial-gradient(2px 2px at 55% 52%, rgba(160,91,255,.45), transparent 70%),
-        radial-gradient(1px 1px at 10% 90%, rgba(255,255,255,.35), transparent 70%);
-      pointer-events: none;
+        radial-gradient(2px 2px at 18% 20%, rgba(255,255,255,.55), transparent 65%),
+        radial-gradient(1px 1px at 72% 28%, rgba(255,255,255,.45), transparent 65%),
+        radial-gradient(2px 2px at 84% 72%, rgba(83,216,255,.45), transparent 65%),
+        radial-gradient(1px 1px at 38% 80%, rgba(255,255,255,.40), transparent 65%),
+        radial-gradient(2px 2px at 60% 55%, rgba(163,92,255,.35), transparent 65%),
+        radial-gradient(1px 1px at 10% 92%, rgba(255,255,255,.35), transparent 65%);
+    }
+    .stars::before{transform:scale(1.2);opacity:.45}
+    .stars::after{transform:scale(1.5);opacity:.20}
+
+    .container{
+      width:min(1180px, calc(100% - 28px));
+      margin:24px auto;
+      position:relative;
+      z-index:2;
     }
 
-    .stars::before { transform: scale(1.2); opacity: .55; }
-    .stars::after { transform: scale(1.5); opacity: .3; }
-
-    .container {
-      width: min(1180px, calc(100% - 28px));
-      margin: 28px auto;
-      position: relative;
-      z-index: 2;
+    .hero{
+      display:flex;
+      justify-content:space-between;
+      gap:18px;
+      align-items:flex-start;
+      padding:22px;
+      border-radius:28px;
+      background:linear-gradient(180deg, rgba(15,24,46,.95), rgba(8,13,26,.82));
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(12px);
+      margin-bottom:18px;
     }
 
-    .hero {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 20px;
-      padding: 24px;
-      border: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(15, 24, 45, 0.9), rgba(8, 12, 24, 0.78));
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-      margin-bottom: 18px;
+    .hero-left{
+      display:flex;
+      gap:18px;
+      align-items:center;
+      min-width:0;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
+    .logo-shell{
+      width:84px;
+      height:84px;
+      flex:0 0 84px;
+      display:grid;
+      place-items:center;
+      border-radius:24px;
       background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.65), transparent 16%),
-        linear-gradient(135deg, rgba(83,216,255,.95), rgba(75,123,255,.9) 45%, rgba(160,91,255,.95));
-      display: grid;
-      place-items: center;
-      box-shadow: 0 0 30px rgba(83, 216, 255, 0.35), 0 0 60px rgba(160, 91, 255, 0.16);
-      position: relative;
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,.10), transparent 30%),
+        linear-gradient(135deg, rgba(83,216,255,.10), rgba(163,92,255,.14));
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:0 0 30px rgba(83,216,255,.12);
     }
 
-    .logo::after {
-      content: "";
-      position: absolute;
-      inset: 6px;
-      border-radius: inherit;
-      border: 1px solid rgba(255,255,255,.25);
+    .logo-shell img{
+      width:68px;
+      height:68px;
+      object-fit:contain;
+      filter:drop-shadow(0 0 18px rgba(83,216,255,.20));
+      display:block;
     }
 
-    .logo span {
-      font-weight: 800;
-      font-size: 26px;
-      color: white;
-      letter-spacing: 1px;
-      text-shadow: 0 2px 12px rgba(0,0,0,.35);
+    .hero h1{
+      margin:0 0 8px;
+      font-size:clamp(28px,4vw,44px);
+      line-height:1;
+      letter-spacing:-.04em;
     }
 
-    .hero h1 {
-      margin: 0 0 6px;
-      font-size: clamp(28px, 4vw, 44px);
-      line-height: 1;
-      letter-spacing: -0.03em;
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      max-width:760px;
+      font-size:15px;
     }
 
-    .hero p {
-      margin: 0;
-      color: var(--muted);
-      max-width: 720px;
-      line-height: 1.6;
+    .hero-badge{
+      white-space:nowrap;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(83,216,255,.08);
+      border:1px solid rgba(83,216,255,.18);
+      color:#d6f8ff;
+      font-size:13px;
+      font-weight:800;
     }
 
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(83, 216, 255, 0.08);
-      border: 1px solid rgba(83, 216, 255, 0.18);
-      color: #ccf7ff;
-      font-weight: 700;
-      font-size: 13px;
-      white-space: nowrap;
+    .grid{
+      display:grid;
+      grid-template-columns:360px minmax(0,1fr);
+      gap:18px;
+      align-items:start;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 360px minmax(0, 1fr);
-      gap: 18px;
-      align-items: start;
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(12px);
     }
 
-    .panel {
-      border: 1px solid var(--border);
-      background: var(--panel);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
+    .side{
+      padding:18px;
+      position:sticky;
+      top:18px;
     }
 
-    .side {
-      padding: 18px;
-      position: sticky;
-      top: 20px;
+    .title-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:14px;
     }
 
-    .panel-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
+    .title-row h2,.title-row h3{
+      margin:0;
+      font-size:18px;
     }
 
-    .panel-title h2,
-    .panel-title h3 {
-      margin: 0;
-      font-size: 18px;
+    .muted{
+      color:var(--muted);
+      font-size:13px;
     }
 
-    .muted {
-      color: var(--muted);
-      font-size: 13px;
+    .stack{
+      display:grid;
+      gap:12px;
     }
 
-    .cards {
-      display: grid;
-      gap: 12px;
+    .card{
+      padding:14px;
+      border-radius:22px;
+      background:linear-gradient(180deg, rgba(19,29,53,.92), rgba(10,16,31,.92));
+      border:1px solid rgba(113,188,255,.14);
     }
 
-    .stat-card {
-      padding: 14px;
-      border-radius: 22px;
-      background: linear-gradient(180deg, rgba(19,28,50,.92), rgba(11,16,31,.9));
-      border: 1px solid rgba(113, 188, 255, 0.16);
+    .label{
+      color:var(--muted);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      margin-bottom:8px;
     }
 
-    .label {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: .12em;
-      color: var(--muted);
-      margin-bottom: 8px;
+    .big{
+      font-size:30px;
+      font-weight:900;
+      letter-spacing:-.04em;
     }
 
-    .value {
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
+    .sub{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
     }
 
-    .subvalue {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 13px;
+    .load-box{
+      margin-top:16px;
+      padding:16px;
+      border-radius:22px;
+      background:linear-gradient(180deg, rgba(18,30,56,.96), rgba(10,17,32,.92));
+      border:1px solid rgba(83,216,255,.14);
     }
 
-    .deposit-box {
-      margin-top: 16px;
-      padding: 16px;
-      border-radius: 22px;
-      background: linear-gradient(180deg, rgba(18, 30, 56, 0.95), rgba(11, 18, 34, 0.9));
-      border: 1px solid rgba(83,216,255,.16);
+    .amount-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin:14px 0 12px;
     }
 
-    .deposit-options {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin: 14px 0 12px;
+    .pill, .btn, input{
+      font-family:inherit;
     }
 
-    .pill,
-    button,
-    input {
-      font-family: inherit;
+    .pill{
+      cursor:pointer;
+      border-radius:16px;
+      border:1px solid rgba(113,188,255,.18);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      padding:12px 10px;
+      font-weight:800;
+      font-size:14px;
+      transition:.18s ease;
     }
 
-    .pill {
-      border: 1px solid rgba(113,188,255,.18);
-      background: rgba(255,255,255,.03);
-      color: var(--text);
-      border-radius: 16px;
-      padding: 12px 10px;
-      text-align: center;
-      cursor: pointer;
-      transition: .18s ease;
-      font-weight: 700;
-      font-size: 14px;
+    .pill:hover,.pill.active{
+      transform:translateY(-1px);
+      border-color:rgba(83,216,255,.55);
+      background:rgba(83,216,255,.10);
+      box-shadow:0 0 0 1px rgba(83,216,255,.14) inset, 0 0 18px rgba(83,216,255,.08);
     }
 
-    .pill:hover,
-    .pill.active {
-      transform: translateY(-1px);
-      border-color: rgba(83,216,255,.55);
-      background: rgba(83,216,255,.1);
-      box-shadow: 0 0 0 1px rgba(83,216,255,.18) inset, 0 0 18px rgba(83,216,255,.12);
+    .custom-row{
+      display:flex;
+      gap:10px;
+      margin-top:10px;
     }
 
-    .custom-deposit {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
+    .custom-row input{
+      flex:1;
+      min-width:0;
+      padding:14px;
+      border-radius:16px;
+      border:1px solid rgba(113,188,255,.18);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      outline:none;
     }
 
-    .custom-deposit input {
-      flex: 1;
-      min-width: 0;
-      padding: 14px 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(113,188,255,.2);
-      background: rgba(255,255,255,.03);
-      color: var(--text);
-      outline: none;
+    .custom-row input:focus{
+      border-color:rgba(83,216,255,.55);
+      box-shadow:0 0 0 4px rgba(83,216,255,.08);
     }
 
-    .custom-deposit input:focus {
-      border-color: rgba(83,216,255,.55);
-      box-shadow: 0 0 0 4px rgba(83,216,255,.08);
+    .btn{
+      border:0;
+      cursor:pointer;
+      border-radius:18px;
+      padding:14px 16px;
+      color:#fff;
+      font-weight:900;
+      letter-spacing:.01em;
+      transition:transform .16s ease, opacity .16s ease;
     }
 
-    .btn {
-      border: 0;
-      cursor: pointer;
-      border-radius: 18px;
-      padding: 14px 16px;
-      color: white;
-      font-weight: 800;
-      letter-spacing: .01em;
-      transition: transform .16s ease, opacity .16s ease, box-shadow .16s ease;
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(1px)}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+    .btn-primary{
+      background:linear-gradient(135deg, var(--cyan), var(--blue));
+      box-shadow:0 12px 28px rgba(74,125,255,.26);
     }
 
-    .btn:hover { transform: translateY(-1px); }
-    .btn:active { transform: translateY(1px); }
-    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--cyan), var(--blue));
-      box-shadow: 0 12px 30px rgba(75, 123, 255, 0.28);
+    .btn-secondary{
+      background:linear-gradient(135deg, var(--violet), var(--blue));
+      box-shadow:0 12px 28px rgba(163,92,255,.22);
     }
 
-    .btn-secondary {
-      background: linear-gradient(135deg, rgba(160,91,255,.95), rgba(75,123,255,.95));
-      box-shadow: 0 12px 30px rgba(160, 91, 255, 0.22);
+    .btn-dark{
+      background:linear-gradient(180deg, rgba(21,31,57,1), rgba(13,18,34,1));
+      border:1px solid rgba(113,188,255,.16);
     }
 
-    .btn-dark {
-      background: linear-gradient(180deg, rgba(21,31,57,1), rgba(13,18,35,1));
-      border: 1px solid rgba(113,188,255,.18);
+    .btn.full{width:100%}
+
+    .rules{
+      margin-top:16px;
+      padding:14px;
+      border-radius:20px;
+      border:1px solid rgba(113,188,255,.12);
+      background:rgba(255,255,255,.02);
     }
 
-    .btn.full { width: 100%; }
-
-    .rules {
-      margin-top: 16px;
-      padding: 14px;
-      border-radius: 20px;
-      border: 1px solid rgba(113,188,255,.14);
-      background: rgba(255,255,255,.02);
+    .rules ul{
+      margin:10px 0 0;
+      padding-left:18px;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
     }
 
-    .rules ul {
-      margin: 10px 0 0;
-      padding-left: 18px;
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 14px;
+    .game{
+      padding:18px;
     }
 
-    .game {
-      padding: 18px;
+    .topbar{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      margin-bottom:16px;
     }
 
-    .topbar {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      margin-bottom: 16px;
+    .mini{
+      padding:14px;
+      border-radius:22px;
+      border:1px solid rgba(113,188,255,.14);
+      background:linear-gradient(180deg, rgba(15,24,45,.92), rgba(9,14,27,.90));
     }
 
-    .mini-card {
-      padding: 14px;
-      border-radius: 22px;
-      border: 1px solid rgba(113,188,255,.14);
-      background: linear-gradient(180deg, rgba(15,24,45,.92), rgba(9,14,27,.9));
+    .mini .k{
+      color:var(--muted);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
     }
 
-    .mini-card .k { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
-    .mini-card .v { margin-top: 8px; font-size: 22px; font-weight: 800; }
+    .mini .v{
+      margin-top:8px;
+      font-size:22px;
+      font-weight:900;
+    }
 
-    .arena {
-      position: relative;
-      min-height: 620px;
-      border-radius: 30px;
-      border: 1px solid rgba(113,188,255,.18);
-      overflow: hidden;
+    .arena{
+      position:relative;
+      min-height:620px;
+      overflow:hidden;
+      border-radius:30px;
+      border:1px solid rgba(113,188,255,.18);
       background:
-        radial-gradient(circle at 50% -5%, rgba(83,216,255,.12), transparent 22%),
-        radial-gradient(circle at 50% 95%, rgba(49,214,139,.1), transparent 28%),
-        linear-gradient(180deg, rgba(9,13,27,.98), rgba(10,14,26,.94));
+        radial-gradient(circle at 50% -10%, rgba(83,216,255,.12), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(51,217,141,.10), transparent 30%),
+        linear-gradient(180deg, rgba(8,12,24,.98), rgba(10,14,26,.96));
     }
 
-    .arena::before {
-      content: "";
-      position: absolute;
-      inset: 0;
+    .arena::before{
+      content:"";
+      position:absolute;
+      inset:0;
       background:
         linear-gradient(rgba(83,216,255,.04) 1px, transparent 1px),
         linear-gradient(90deg, rgba(83,216,255,.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity: .55;
-      pointer-events: none;
+      background-size:42px 42px;
+      opacity:.55;
+      pointer-events:none;
     }
 
-    .stage {
-      position: relative;
-      height: 380px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 40px 20px 0;
+    .axion-mark{
+      position:absolute;
+      top:18px;
+      left:18px;
+      width:64px;
+      height:64px;
+      padding:8px;
+      border-radius:18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+      box-shadow:0 0 20px rgba(83,216,255,.08);
+      backdrop-filter:blur(8px);
+      z-index:3;
     }
 
-    .target-zone {
-      position: relative;
-      width: min(420px, 86%);
-      height: 220px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
+    .axion-mark img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+      filter:drop-shadow(0 0 16px rgba(83,216,255,.18));
     }
 
-    .target-hole {
-      position: absolute;
-      bottom: 10px;
-      width: 240px;
-      height: 68px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 50% 35%, rgba(0,0,0,.4), rgba(0,0,0,.86));
-      box-shadow: inset 0 18px 28px rgba(255,255,255,.03), 0 0 40px rgba(0,0,0,.35);
+    .stage{
+      position:relative;
+      height:380px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      padding:40px 20px 0;
     }
 
-    .target-ring {
-      position: absolute;
-      bottom: 28px;
-      width: 280px;
-      height: 95px;
-      border-radius: 50%;
-      border: 2px solid rgba(83,216,255,.12);
-      box-shadow: 0 0 40px rgba(83,216,255,.08);
+    .target-zone{
+      position:relative;
+      width:min(420px,86%);
+      height:220px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
     }
 
-    .target {
-      position: absolute;
-      bottom: 55px;
-      width: 150px;
-      height: 150px;
-      transform: translateY(100px) scale(.9);
-      transition: transform .18s ease;
+    .target-hole{
+      position:absolute;
+      bottom:10px;
+      width:240px;
+      height:68px;
+      border-radius:50%;
+      background:radial-gradient(circle at 50% 35%, rgba(0,0,0,.38), rgba(0,0,0,.88));
+      box-shadow:inset 0 18px 28px rgba(255,255,255,.03), 0 0 40px rgba(0,0,0,.35);
     }
 
-    .target.up {
-      transform: translateY(0) scale(1);
+    .target-ring{
+      position:absolute;
+      bottom:28px;
+      width:282px;
+      height:96px;
+      border-radius:50%;
+      border:2px solid rgba(83,216,255,.12);
+      box-shadow:0 0 36px rgba(83,216,255,.08);
     }
 
-    .target-body {
-      position: absolute;
-      inset: 0;
-      border-radius: 40px 40px 36px 36px;
-      background: linear-gradient(180deg, rgba(83,216,255,.95), rgba(75,123,255,.92) 52%, rgba(160,91,255,.95));
-      box-shadow: 0 18px 60px rgba(83,216,255,.22), 0 0 35px rgba(160,91,255,.2);
-      border: 1px solid rgba(255,255,255,.24);
+    .target{
+      position:absolute;
+      bottom:55px;
+      width:152px;
+      height:152px;
+      transform:translateY(100px) scale(.9);
+      transition:transform .18s ease;
     }
 
-    .target-body::before,
-    .target-body::after {
-      content: "";
-      position: absolute;
-      top: 42px;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: white;
-      box-shadow: 0 0 20px rgba(255,255,255,.45);
+    .target.up{
+      transform:translateY(0) scale(1);
     }
 
-    .target-body::before { left: 42px; }
-    .target-body::after { right: 42px; }
-
-    .target-mouth {
-      position: absolute;
-      left: 50%;
-      top: 82px;
-      width: 54px;
-      height: 18px;
-      transform: translateX(-50%);
-      border-radius: 0 0 24px 24px;
-      background: rgba(8,12,22,.65);
-      box-shadow: inset 0 3px 4px rgba(255,255,255,.08);
+    .target-core{
+      position:absolute;
+      inset:0;
+      border-radius:38px;
+      background:
+        radial-gradient(circle at 50% 22%, rgba(255,255,255,.12), transparent 26%),
+        linear-gradient(180deg, rgba(83,216,255,.96), rgba(74,125,255,.92) 50%, rgba(163,92,255,.96));
+      box-shadow:0 18px 60px rgba(83,216,255,.22), 0 0 35px rgba(163,92,255,.18);
+      border:1px solid rgba(255,255,255,.22);
     }
 
-    .target-hit {
-      position: absolute;
-      inset: -6px;
-      border-radius: 44px;
-      border: 2px solid rgba(255,255,255,.5);
-      opacity: 0;
-      transform: scale(.9);
+    .target-logo{
+      position:absolute;
+      left:50%;
+      top:18px;
+      width:52px;
+      height:52px;
+      transform:translateX(-50%);
+      object-fit:contain;
+      filter:drop-shadow(0 0 14px rgba(255,255,255,.18));
+      opacity:.96;
     }
 
-    .target.hit .target-hit {
-      animation: burst .32s ease;
+    .target-core::before,.target-core::after{
+      content:"";
+      position:absolute;
+      top:82px;
+      width:14px;
+      height:14px;
+      border-radius:50%;
+      background:#fff;
+      box-shadow:0 0 18px rgba(255,255,255,.35);
     }
 
-    @keyframes burst {
-      0% { opacity: 0; transform: scale(.9); }
-      30% { opacity: 1; }
-      100% { opacity: 0; transform: scale(1.2); }
+    .target-core::before{left:40px}
+    .target-core::after{right:40px}
+
+    .target-mouth{
+      position:absolute;
+      left:50%;
+      top:108px;
+      width:52px;
+      height:16px;
+      transform:translateX(-50%);
+      border-radius:0 0 22px 22px;
+      background:rgba(8,12,22,.65);
     }
 
-    .hammer-wrap {
-      position: absolute;
-      top: 30px;
-      right: min(80px, 8%);
-      width: 180px;
-      height: 180px;
-      pointer-events: none;
-      transform-origin: 80% 15%;
-      transition: transform .08s ease;
-      filter: drop-shadow(0 12px 24px rgba(0,0,0,.3));
+    .target-hit{
+      position:absolute;
+      inset:-6px;
+      border-radius:44px;
+      border:2px solid rgba(255,255,255,.50);
+      opacity:0;
+      transform:scale(.9);
     }
 
-    .hammer-wrap.swing {
-      transform: rotate(-48deg) translate(-14px, 18px);
+    .target.hit .target-hit{
+      animation:burst .32s ease;
     }
 
-    .hammer-head {
-      position: absolute;
-      top: 0;
-      left: 18px;
-      width: 102px;
-      height: 50px;
-      border-radius: 16px;
-      background: linear-gradient(180deg, #dde6f2, #8aa2c3);
-      box-shadow: inset 0 -8px 18px rgba(0,0,0,.18), inset 0 5px 9px rgba(255,255,255,.55);
+    @keyframes burst{
+      0%{opacity:0;transform:scale(.9)}
+      30%{opacity:1}
+      100%{opacity:0;transform:scale(1.2)}
     }
 
-    .hammer-head::before,
-    .hammer-head::after {
-      content: "";
-      position: absolute;
-      top: 6px;
-      width: 16px;
-      height: 38px;
-      border-radius: 10px;
-      background: linear-gradient(180deg, #edf3ff, #8aa2c3);
+    .hammer-wrap{
+      position:absolute;
+      top:28px;
+      right:min(82px,8%);
+      width:180px;
+      height:180px;
+      pointer-events:none;
+      transform-origin:80% 15%;
+      transition:transform .08s ease;
+      filter:drop-shadow(0 12px 24px rgba(0,0,0,.30));
     }
 
-    .hammer-head::before { left: -8px; }
-    .hammer-head::after { right: -8px; }
-
-    .hammer-handle {
-      position: absolute;
-      top: 32px;
-      left: 86px;
-      width: 22px;
-      height: 132px;
-      border-radius: 14px;
-      background: linear-gradient(180deg, #85562b, #4e3117);
-      transform: rotate(28deg);
-      box-shadow: inset 0 2px 5px rgba(255,255,255,.1);
+    .hammer-wrap.swing{
+      transform:rotate(-48deg) translate(-14px,18px);
     }
 
-    .controls {
-      padding: 0 18px 18px;
+    .hammer-head{
+      position:absolute;
+      top:0;
+      left:18px;
+      width:102px;
+      height:50px;
+      border-radius:16px;
+      background:linear-gradient(180deg, #eef4ff, #8aa2c3);
+      box-shadow:inset 0 -8px 18px rgba(0,0,0,.18), inset 0 5px 9px rgba(255,255,255,.55);
     }
 
-    .meter-card {
-      padding: 18px;
-      border-radius: 24px;
-      border: 1px solid rgba(113,188,255,.14);
-      background: linear-gradient(180deg, rgba(15,24,45,.9), rgba(9,14,27,.88));
+    .hammer-head::before,.hammer-head::after{
+      content:"";
+      position:absolute;
+      top:6px;
+      width:16px;
+      height:38px;
+      border-radius:10px;
+      background:linear-gradient(180deg, #edf3ff, #8aa2c3);
     }
 
-    .meter-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
+    .hammer-head::before{left:-8px}
+    .hammer-head::after{right:-8px}
+
+    .hammer-handle{
+      position:absolute;
+      top:32px;
+      left:86px;
+      width:22px;
+      height:132px;
+      border-radius:14px;
+      background:linear-gradient(180deg, #85562b, #4e3117);
+      transform:rotate(28deg);
+      box-shadow:inset 0 2px 5px rgba(255,255,255,.10);
     }
 
-    .meter-header strong {
-      font-size: 18px;
+    .controls{
+      padding:0 18px 18px;
     }
 
-    .meter {
-      position: relative;
-      height: 34px;
-      border-radius: 999px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,.08);
-      background: rgba(255,255,255,.04);
-      box-shadow: inset 0 8px 18px rgba(0,0,0,.28);
+    .meter-card{
+      padding:18px;
+      border-radius:24px;
+      border:1px solid rgba(113,188,255,.14);
+      background:linear-gradient(180deg, rgba(15,24,45,.90), rgba(9,14,27,.88));
     }
 
-    .meter-zones {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      grid-template-columns: 18% 26% 28% 18% 10%;
+    .meter-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
     }
 
-    .zone-red { background: linear-gradient(180deg, rgba(255,107,129,.85), rgba(211,60,86,.9)); }
-    .zone-yellow { background: linear-gradient(180deg, rgba(255,202,87,.85), rgba(228,170,35,.9)); }
-    .zone-green { background: linear-gradient(180deg, rgba(49,214,139,.85), rgba(17,167,99,.9)); }
-    .zone-green2 { background: linear-gradient(180deg, rgba(49,214,139,.96), rgba(14,178,102,.98)); }
-    .zone-gold { background: linear-gradient(180deg, rgba(255,235,126,.96), rgba(255,189,51,.96)); }
-
-    .meter-marker {
-      position: absolute;
-      top: 2px;
-      bottom: 2px;
-      width: 16px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(225,240,255,.88));
-      box-shadow: 0 0 0 3px rgba(83,216,255,.12), 0 0 20px rgba(255,255,255,.35);
-      transform: translateX(-50%);
-      left: 10%;
+    .meter-head strong{
+      font-size:18px;
     }
 
-    .zone-legend {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      margin-top: 12px;
+    .meter{
+      position:relative;
+      height:34px;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      box-shadow:inset 0 8px 18px rgba(0,0,0,.28);
     }
 
-    .legend-item {
-      padding: 10px 8px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.06);
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted);
+    .zones{
+      position:absolute;
+      inset:0;
+      display:grid;
+      grid-template-columns:18% 26% 28% 18% 10%;
     }
 
-    .legend-item strong {
-      display: block;
-      margin-top: 4px;
-      font-size: 13px;
-      color: var(--text);
+    .z-red{background:linear-gradient(180deg, rgba(255,111,136,.85), rgba(215,63,91,.90))}
+    .z-yellow{background:linear-gradient(180deg, rgba(255,201,94,.88), rgba(226,166,31,.92))}
+    .z-green{background:linear-gradient(180deg, rgba(51,217,141,.86), rgba(16,169,100,.92))}
+    .z-green2{background:linear-gradient(180deg, rgba(51,217,141,.96), rgba(14,178,102,.98))}
+    .z-gold{background:linear-gradient(180deg, rgba(255,235,126,.96), rgba(255,188,45,.96))}
+
+    .marker{
+      position:absolute;
+      top:2px;
+      bottom:2px;
+      width:16px;
+      border-radius:999px;
+      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(225,240,255,.88));
+      box-shadow:0 0 0 3px rgba(83,216,255,.12), 0 0 20px rgba(255,255,255,.35);
+      transform:translateX(-50%);
+      left:10%;
     }
 
-    .action-row {
-      display: flex;
-      gap: 12px;
-      margin-top: 16px;
-      flex-wrap: wrap;
+    .legend{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:8px;
+      margin-top:12px;
     }
 
-    .result-box {
-      margin-top: 16px;
-      display: grid;
-      grid-template-columns: 1.3fr .7fr;
-      gap: 12px;
+    .legend-item{
+      padding:10px 8px;
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.05);
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
     }
 
-    .result-panel,
-    .feed-panel {
-      padding: 16px;
-      border-radius: 20px;
-      border: 1px solid rgba(113,188,255,.14);
-      background: rgba(255,255,255,.025);
-      min-height: 132px;
+    .legend-item strong{
+      display:block;
+      margin-top:4px;
+      color:var(--text);
+      font-size:13px;
     }
 
-    .result-status {
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 6px;
+    .action-row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:16px;
     }
 
-    .result-status.win { color: #9dffd0; }
-    .result-status.lose { color: #ff9fb0; }
-    .result-status.idle { color: var(--text); }
-
-    .result-meta {
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 14px;
+    .result-box{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns:1.3fr .7fr;
+      gap:12px;
     }
 
-    .feed-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-height: 240px;
-      overflow: auto;
-      padding-right: 2px;
+    .result-panel,.feed-panel{
+      min-height:132px;
+      padding:16px;
+      border-radius:20px;
+      border:1px solid rgba(113,188,255,.14);
+      background:rgba(255,255,255,.025);
     }
 
-    .feed-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.04);
-      font-size: 13px;
+    .status{
+      font-size:28px;
+      font-weight:900;
+      letter-spacing:-.03em;
+      margin-bottom:6px;
     }
 
-    .feed-item span:last-child {
-      font-weight: 800;
-      white-space: nowrap;
+    .status.win{color:#9dffd0}
+    .status.lose{color:#ff9fb0}
+    .status.idle{color:var(--text)}
+
+    .status-text{
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
     }
 
-    .feed-plus { color: #9dffd0; }
-    .feed-minus { color: #ff9fb0; }
-
-    .footer-note {
-      margin-top: 14px;
-      color: var(--muted);
-      font-size: 13px;
-      text-align: center;
+    .feed-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-height:240px;
+      overflow:auto;
+      padding-right:2px;
     }
 
-    .flash {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.16), transparent 30%);
-      opacity: 0;
-      pointer-events: none;
+    .feed-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:10px 12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.04);
+      font-size:13px;
     }
 
-    .flash.show { animation: flash .2s ease; }
-
-    @keyframes flash {
-      0% { opacity: 0; }
-      40% { opacity: 1; }
-      100% { opacity: 0; }
+    .feed-item span:last-child{
+      white-space:nowrap;
+      font-weight:900;
     }
 
-    .floating {
-      position: absolute;
-      left: 50%;
-      top: 38%;
-      transform: translate(-50%, -50%);
-      font-weight: 800;
-      font-size: 34px;
-      opacity: 0;
-      pointer-events: none;
-      text-shadow: 0 10px 30px rgba(0,0,0,.4);
+    .feed-plus{color:#9dffd0}
+    .feed-minus{color:#ff9fb0}
+
+    .footer-note{
+      margin-top:14px;
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
     }
 
-    .floating.show.plus,
-    .floating.show.minus {
-      animation: floatup .9s ease forwards;
+    .flash{
+      position:absolute;
+      inset:0;
+      background:radial-gradient(circle at 50% 50%, rgba(255,255,255,.16), transparent 30%);
+      opacity:0;
+      pointer-events:none;
     }
 
-    .floating.plus { color: #9dffd0; }
-    .floating.minus { color: #ff9fb0; }
+    .flash.show{animation:flash .2s ease}
 
-    @keyframes floatup {
-      0% { opacity: 0; transform: translate(-50%, -20px) scale(.8); }
-      15% { opacity: 1; }
-      100% { opacity: 0; transform: translate(-50%, -100px) scale(1.06); }
+    @keyframes flash{
+      0%{opacity:0}
+      40%{opacity:1}
+      100%{opacity:0}
     }
 
-    @media (max-width: 1024px) {
-      .grid { grid-template-columns: 1fr; }
-      .side { position: static; }
-      .topbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .hero { flex-direction: column; align-items: stretch; }
+    .floating{
+      position:absolute;
+      left:50%;
+      top:38%;
+      transform:translate(-50%,-50%);
+      font-weight:900;
+      font-size:34px;
+      opacity:0;
+      pointer-events:none;
+      text-shadow:0 10px 30px rgba(0,0,0,.4);
     }
 
-    @media (max-width: 700px) {
-      .container { width: min(100% - 16px, 100%); margin: 12px auto 20px; }
-      .hero, .game, .side { padding: 14px; border-radius: 22px; }
-      .deposit-options { grid-template-columns: 1fr; }
-      .custom-deposit { flex-direction: column; }
-      .topbar { grid-template-columns: 1fr; }
-      .arena { min-height: 560px; border-radius: 24px; }
-      .stage { height: 320px; padding-top: 24px; }
-      .target-zone { width: 100%; }
-      .target-hole { width: 200px; height: 58px; }
-      .target-ring { width: 236px; height: 84px; }
-      .target { width: 126px; height: 126px; bottom: 48px; }
-      .hammer-wrap { right: 18px; top: 10px; transform: scale(.82); transform-origin: top right; }
-      .zone-legend { grid-template-columns: repeat(2, 1fr); }
-      .result-box { grid-template-columns: 1fr; }
-      .floating { font-size: 28px; top: 34%; }
-      .hero h1 { line-height: 1.05; }
+    .floating.show.plus,.floating.show.minus{
+      animation:floatup .9s ease forwards;
+    }
+
+    .floating.plus{color:#9dffd0}
+    .floating.minus{color:#ff9fb0}
+
+    @keyframes floatup{
+      0%{opacity:0;transform:translate(-50%,-20px) scale(.8)}
+      15%{opacity:1}
+      100%{opacity:0;transform:translate(-50%,-100px) scale(1.06)}
+    }
+
+    @media (max-width:1024px){
+      .grid{grid-template-columns:1fr}
+      .side{position:static}
+      .topbar{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .hero{flex-direction:column}
+    }
+
+    @media (max-width:700px){
+      .container{width:min(100% - 16px, 100%);margin:12px auto 20px}
+      .hero,.game,.side{padding:14px;border-radius:22px}
+      .hero-left{align-items:flex-start}
+      .logo-shell{width:72px;height:72px;flex-basis:72px}
+      .logo-shell img{width:58px;height:58px}
+      .amount-grid{grid-template-columns:1fr}
+      .custom-row{flex-direction:column}
+      .topbar{grid-template-columns:1fr}
+      .arena{min-height:560px;border-radius:24px}
+      .stage{height:320px;padding-top:24px}
+      .target-zone{width:100%}
+      .target-hole{width:200px;height:58px}
+      .target-ring{width:236px;height:84px}
+      .target{width:126px;height:126px;bottom:48px}
+      .target-logo{width:42px;height:42px;top:16px}
+      .hammer-wrap{right:18px;top:10px;transform:scale(.82);transform-origin:top right}
+      .legend{grid-template-columns:repeat(2,1fr)}
+      .result-box{grid-template-columns:1fr}
+      .floating{font-size:28px;top:34%}
+      .axion-mark{width:54px;height:54px;top:12px;left:12px}
     }
   </style>
 </head>
@@ -756,13 +803,13 @@
 
   <div class="container">
     <section class="hero">
-      <div>
-        <div class="brand">
-          <div class="logo"><span>AX</span></div>
-          <div>
-            <h1>AXION HAMMER DEMO</h1>
-            <p>Load demo AX, wait for the target, and strike inside the best timing zone to earn more. Miss the timing and your in-game AX balance drops. This version is demo-only and does not use real token transfers.</p>
-          </div>
+      <div class="hero-left">
+        <div class="logo-shell">
+          <img src="https://raw.githubusercontent.com/axionteam645/axion-dashboard/main/axion-logo.png" alt="AXION Logo">
+        </div>
+        <div>
+          <h1>AXION HAMMER DEMO</h1>
+          <p>Load demo AX, wait for the target, and strike inside the best timing zone to earn more. Miss the timing and your in-game AX balance drops. This version is demo-only and does not use real token transfers.</p>
         </div>
       </div>
       <div class="hero-badge">Demo Mode • No Real AX Transfer</div>
@@ -770,32 +817,32 @@
 
     <section class="grid">
       <aside class="panel side">
-        <div class="panel-title">
+        <div class="title-row">
           <h2>Game Wallet</h2>
           <span class="muted">In-game only</span>
         </div>
 
-        <div class="cards">
-          <div class="stat-card">
+        <div class="stack">
+          <div class="card">
             <div class="label">Demo AX Balance</div>
-            <div class="value" id="walletBalance">0 AX</div>
-            <div class="subvalue">Load your balance below to start smashing.</div>
+            <div class="big" id="walletBalance">0 AX</div>
+            <div class="sub">Load your balance below to start smashing.</div>
           </div>
 
-          <div class="stat-card">
+          <div class="card">
             <div class="label">Current Combo</div>
-            <div class="value" id="comboValue">x0</div>
-            <div class="subvalue">Consecutive winning hits increase bonus rewards.</div>
+            <div class="big" id="comboValue">x0</div>
+            <div class="sub">Consecutive winning hits increase bonus rewards.</div>
           </div>
         </div>
 
-        <div class="deposit-box">
-          <div class="panel-title" style="margin-bottom: 8px;">
+        <div class="load-box">
+          <div class="title-row" style="margin-bottom:8px;">
             <h3>Load Demo AX</h3>
             <span class="muted">Fast start</span>
           </div>
 
-          <div class="deposit-options">
+          <div class="amount-grid">
             <button class="pill" data-amount="100">100 AX</button>
             <button class="pill" data-amount="500">500 AX</button>
             <button class="pill" data-amount="1000">1000 AX</button>
@@ -803,14 +850,14 @@
 
           <button class="btn btn-primary full" id="loadSelectedBtn">Load Selected</button>
 
-          <div class="custom-deposit">
-            <input type="number" id="customAmount" min="1" step="1" placeholder="Custom AX amount" />
+          <div class="custom-row">
+            <input type="number" id="customAmount" min="1" step="1" placeholder="Custom AX amount">
             <button class="btn btn-secondary" id="loadCustomBtn">Load</button>
           </div>
         </div>
 
         <div class="rules">
-          <div class="panel-title" style="margin: 0 0 4px;">
+          <div class="title-row" style="margin-bottom:4px;">
             <h3>Reward Rules</h3>
           </div>
           <ul>
@@ -826,25 +873,29 @@
 
       <main class="panel game">
         <div class="topbar">
-          <div class="mini-card">
+          <div class="mini">
             <div class="k">Round</div>
             <div class="v" id="roundValue">0</div>
           </div>
-          <div class="mini-card">
+          <div class="mini">
             <div class="k">Best Combo</div>
             <div class="v" id="bestComboValue">0</div>
           </div>
-          <div class="mini-card">
+          <div class="mini">
             <div class="k">Wins</div>
             <div class="v" id="winsValue">0</div>
           </div>
-          <div class="mini-card">
+          <div class="mini">
             <div class="k">Losses</div>
             <div class="v" id="lossesValue">0</div>
           </div>
         </div>
 
         <div class="arena" id="arena">
+          <div class="axion-mark">
+            <img src="https://raw.githubusercontent.com/axionteam645/axion-dashboard/main/axion-logo.png" alt="AXION Logo">
+          </div>
+
           <div class="flash" id="flash"></div>
           <div class="floating" id="floatingText">+10 AX</div>
 
@@ -854,7 +905,8 @@
               <div class="target-hole"></div>
 
               <div class="target" id="target">
-                <div class="target-body"></div>
+                <div class="target-core"></div>
+                <img class="target-logo" src="https://raw.githubusercontent.com/axionteam645/axion-dashboard/main/axion-logo.png" alt="AXION Symbol">
                 <div class="target-mouth"></div>
                 <div class="target-hit"></div>
               </div>
@@ -868,7 +920,7 @@
 
           <div class="controls">
             <div class="meter-card">
-              <div class="meter-header">
+              <div class="meter-head">
                 <div>
                   <strong>Power Timing Meter</strong>
                   <div class="muted">Press <strong>Hammer Strike</strong> while the target is visible.</div>
@@ -877,17 +929,17 @@
               </div>
 
               <div class="meter" aria-label="timing meter">
-                <div class="meter-zones">
-                  <div class="zone-red"></div>
-                  <div class="zone-yellow"></div>
-                  <div class="zone-green"></div>
-                  <div class="zone-green2"></div>
-                  <div class="zone-gold"></div>
+                <div class="zones">
+                  <div class="z-red"></div>
+                  <div class="z-yellow"></div>
+                  <div class="z-green"></div>
+                  <div class="z-green2"></div>
+                  <div class="z-gold"></div>
                 </div>
-                <div class="meter-marker" id="meterMarker"></div>
+                <div class="marker" id="marker"></div>
               </div>
 
-              <div class="zone-legend">
+              <div class="legend">
                 <div class="legend-item">Red<strong>-12 AX</strong></div>
                 <div class="legend-item">Yellow<strong>+4 AX</strong></div>
                 <div class="legend-item">Green<strong>+10 AX</strong></div>
@@ -903,11 +955,12 @@
 
               <div class="result-box">
                 <div class="result-panel">
-                  <div class="result-status idle" id="resultStatus">Waiting for demo AX load</div>
-                  <div class="result-meta" id="resultText">Load balance, start a round, then strike when the target pops up. Better timing means bigger AX rewards.</div>
+                  <div class="status idle" id="resultStatus">Waiting for demo AX load</div>
+                  <div class="status-text" id="resultText">Load balance, start a round, then strike when the target pops up. Better timing means bigger AX rewards.</div>
                 </div>
+
                 <div class="feed-panel">
-                  <div class="panel-title" style="margin-bottom: 10px;">
+                  <div class="title-row" style="margin-bottom:10px;">
                     <h3>Recent Rounds</h3>
                     <span class="muted">Live log</span>
                   </div>
@@ -915,7 +968,8 @@
                 </div>
               </div>
             </div>
-            <div class="footer-note">AXION Hammer Demo • Visual prototype for gameplay flow only.</div>
+
+            <div class="footer-note">AXION Hammer Demo • Visual gameplay prototype only.</div>
           </div>
         </div>
       </main>
@@ -938,8 +992,7 @@
       roundActive: false,
       resolved: false,
       meterFrame: null,
-      targetDownTimeout: null,
-      nextRoundTimeout: null
+      targetDownTimeout: null
     };
 
     const walletBalance = document.getElementById('walletBalance');
@@ -950,7 +1003,7 @@
     const roundValue = document.getElementById('roundValue');
     const resultStatus = document.getElementById('resultStatus');
     const resultText = document.getElementById('resultText');
-    const meterMarker = document.getElementById('meterMarker');
+    const marker = document.getElementById('marker');
     const meterState = document.getElementById('meterState');
     const target = document.getElementById('target');
     const hammer = document.getElementById('hammer');
@@ -978,7 +1031,7 @@
 
     function setMessage(status, text, mode = 'idle') {
       resultStatus.textContent = status;
-      resultStatus.className = `result-status ${mode}`;
+      resultStatus.className = `status ${mode}`;
       resultText.textContent = text;
     }
 
@@ -1036,6 +1089,7 @@
     function animateMeter() {
       if (!state.meterRunning) return;
       state.markerPos += state.markerDir * 1.35;
+
       if (state.markerPos >= 99) {
         state.markerPos = 99;
         state.markerDir = -1;
@@ -1044,7 +1098,8 @@
         state.markerPos = 1;
         state.markerDir = 1;
       }
-      meterMarker.style.left = `${state.markerPos}%`;
+
+      marker.style.left = `${state.markerPos}%`;
       state.meterFrame = requestAnimationFrame(animateMeter);
     }
 
@@ -1058,11 +1113,13 @@
 
     function resolveRound(delta, zoneLabel, reason, win) {
       if (state.resolved) return;
+
       state.resolved = true;
       state.roundActive = false;
       stopMeter();
       clearTimeout(state.targetDownTimeout);
       setTargetVisible(false);
+
       state.balance += delta;
       if (state.balance < 0) state.balance = 0;
 
@@ -1070,12 +1127,14 @@
         state.wins += 1;
         state.combo += 1;
         state.bestCombo = Math.max(state.bestCombo, state.combo);
+
         const comboBonus = state.combo >= 3 ? 2 * Math.min(state.combo, 5) : 0;
         if (comboBonus > 0) {
           state.balance += comboBonus;
           delta += comboBonus;
           reason += ` Combo bonus +${comboBonus} AX.`;
         }
+
         setMessage(`${zoneLabel}!`, `${reason} Your timing paid off.`, 'win');
       } else {
         state.losses += 1;
@@ -1094,15 +1153,17 @@
 
     function startRound() {
       if (state.balance <= 0 || state.roundActive) return;
+
       state.round += 1;
       state.roundActive = true;
       state.resolved = false;
       meterState.textContent = 'Charging';
       state.markerPos = 10 + Math.random() * 20;
       state.markerDir = Math.random() > 0.5 ? 1 : -1;
-      meterMarker.style.left = `${state.markerPos}%`;
+      marker.style.left = `${state.markerPos}%`;
       setTargetVisible(false);
       updateUI();
+
       setMessage('Round started', 'Wait for the target to emerge, then strike while watching the timing meter.', 'idle');
 
       const appearDelay = 600 + Math.random() * 900;
@@ -1113,8 +1174,10 @@
 
       setTimeout(() => {
         if (!state.roundActive || state.resolved) return;
+
         setTargetVisible(true);
         meterState.textContent = 'Target visible';
+
         state.targetDownTimeout = setTimeout(() => {
           if (!state.resolved) {
             resolveRound(-15, 'Missed Target', 'You failed to strike before the target disappeared.', false);
@@ -1125,7 +1188,9 @@
 
     function strike() {
       if (!state.roundActive || state.resolved) return;
+
       swingHammer();
+
       if (!state.targetVisible) {
         resolveRound(-15, 'Empty Swing', 'You struck before the target appeared.', false);
         return;
@@ -1138,7 +1203,7 @@
     function resetDemo() {
       stopMeter();
       clearTimeout(state.targetDownTimeout);
-      clearTimeout(state.nextRoundTimeout);
+
       state.balance = 0;
       state.round = 0;
       state.wins = 0;
@@ -1151,7 +1216,8 @@
       state.targetVisible = false;
       state.roundActive = false;
       state.resolved = false;
-      meterMarker.style.left = '10%';
+
+      marker.style.left = '10%';
       meterState.textContent = 'Idle';
       setTargetVisible(false);
       feedList.innerHTML = '';
@@ -1162,6 +1228,7 @@
     function loadAX(amount) {
       const value = Number(amount);
       if (!Number.isFinite(value) || value <= 0) return;
+
       state.balance += Math.floor(value);
       setMessage('Demo AX loaded', `${Math.floor(value)} AX added to your in-game balance. You can now start smashing.`, 'win');
       addFeed('Demo AX loaded', Math.floor(value));
@@ -1175,6 +1242,7 @@
         state.selectedAmount = Number(pill.dataset.amount);
       });
     });
+
     pills[0].classList.add('active');
 
     loadSelectedBtn.addEventListener('click', () => loadAX(state.selectedAmount));
@@ -1182,6 +1250,7 @@
     customAmount.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') loadAX(customAmount.value);
     });
+
     startBtn.addEventListener('click', startRound);
     hitBtn.addEventListener('click', strike);
     resetBtn.addEventListener('click', resetDemo);
