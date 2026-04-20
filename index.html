@@ -1,271 +1,1714 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AXION PLAY</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AXION Play - Hammer Game</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-<script src="https://unpkg.com/ethers@6.7.0/dist/ethers.umd.min.js"></script>
-<script src="https://unpkg.com/@walletconnect/ethereum-provider@2.10.1/dist/index.umd.js"></script>
+  <script src="https://unpkg.com/ethers@6.7.0/dist/ethers.umd.min.js"></script>
+  <script src="https://unpkg.com/@walletconnect/ethereum-provider@2.10.1/dist/index.umd.js"></script>
 
-<style>
-/* BACKGROUND GAME STYLE */
-body{
-  margin:0;
-  font-family:'Inter',sans-serif;
-  color:white;
-  overflow:hidden;
+  <style>
+    :root{
+      --bg:#050816;
+      --bg2:#08112a;
+      --bg3:#120a2d;
+      --panel:rgba(10,16,34,.8);
+      --panel-2:rgba(14,22,44,.9);
+      --border:rgba(94,182,255,.18);
+      --text:#eef6ff;
+      --muted:#8ea6c5;
+      --cyan:#54d9ff;
+      --blue:#4d7cff;
+      --violet:#aa62ff;
+      --green:#36da90;
+      --yellow:#ffc95b;
+      --red:#ff6f88;
+      --shadow:0 20px 60px rgba(0,0,0,.42);
+    }
 
-  background:
-    radial-gradient(circle at 20% 20%, rgba(0,255,255,0.15), transparent 30%),
-    radial-gradient(circle at 80% 30%, rgba(162,89,255,0.18), transparent 30%),
-    linear-gradient(180deg,#050816,#02040d);
-}
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      min-height:100%;
+      font-family:'Inter',sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 20% 15%, rgba(84,217,255,.12), transparent 22%),
+        radial-gradient(circle at 80% 10%, rgba(170,98,255,.12), transparent 22%),
+        linear-gradient(180deg,var(--bg2),var(--bg));
+    }
 
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:
-    linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);
-  background-size:40px 40px;
-  animation:gridMove 10s linear infinite;
-}
+    body{
+      min-height:100vh;
+      overflow-x:hidden;
+      position:relative;
+    }
 
-@keyframes gridMove{
-  from{transform:translateY(0)}
-  to{transform:translateY(40px)}
-}
+    .sky{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:0;
+      background:
+        radial-gradient(circle at 50% 110%, rgba(54,218,144,.08), transparent 24%),
+        radial-gradient(circle at 50% -10%, rgba(84,217,255,.08), transparent 24%);
+    }
 
-.stars{
-  position:fixed;
-  inset:0;
-  background-image:
-    radial-gradient(2px 2px at 10% 20%, white, transparent),
-    radial-gradient(1px 1px at 50% 60%, cyan, transparent),
-    radial-gradient(2px 2px at 80% 40%, violet, transparent);
-  opacity:.4;
-}
+    .stars,
+    .stars::before,
+    .stars::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background-image:
+        radial-gradient(2px 2px at 8% 18%, rgba(255,255,255,.65), transparent 65%),
+        radial-gradient(1px 1px at 18% 74%, rgba(255,255,255,.45), transparent 65%),
+        radial-gradient(2px 2px at 28% 40%, rgba(84,217,255,.42), transparent 65%),
+        radial-gradient(1px 1px at 35% 12%, rgba(255,255,255,.42), transparent 65%),
+        radial-gradient(2px 2px at 50% 55%, rgba(170,98,255,.35), transparent 65%),
+        radial-gradient(1px 1px at 65% 22%, rgba(255,255,255,.40), transparent 65%),
+        radial-gradient(2px 2px at 78% 48%, rgba(84,217,255,.35), transparent 65%),
+        radial-gradient(1px 1px at 88% 16%, rgba(255,255,255,.50), transparent 65%),
+        radial-gradient(1px 1px at 92% 76%, rgba(255,255,255,.35), transparent 65%),
+        radial-gradient(2px 2px at 70% 84%, rgba(170,98,255,.30), transparent 65%);
+      animation: twinkle 9s linear infinite;
+    }
 
-/* HEADER */
-.header{
-  display:flex;
-  justify-content:space-between;
-  padding:15px 20px;
-  border-bottom:1px solid rgba(255,255,255,.1);
-  backdrop-filter:blur(10px);
-}
+    .stars::before{transform:scale(1.25);opacity:.5}
+    .stars::after{transform:scale(1.55);opacity:.22}
 
-.logo{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
+    @keyframes twinkle{
+      0%{transform:translateY(0)}
+      50%{transform:translateY(-6px)}
+      100%{transform:translateY(0)}
+    }
 
-.logo img{width:40px}
+    .planet{
+      position:absolute;
+      border-radius:50%;
+      opacity:.8;
+    }
 
-.wallet{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
+    .planet.one{
+      width:220px;
+      height:220px;
+      top:7%;
+      left:-60px;
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255,255,255,.16), transparent 18%),
+        radial-gradient(circle at 45% 40%, #23376f, #111d42 60%, transparent 72%);
+      box-shadow:0 0 80px rgba(77,124,255,.12);
+    }
 
-button{
-  padding:10px 15px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:700;
-}
+    .planet.two{
+      width:130px;
+      height:130px;
+      right:3%;
+      top:18%;
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255,255,255,.18), transparent 18%),
+        radial-gradient(circle at 45% 40%, #3d1868, #160b34 60%, transparent 72%);
+      box-shadow:0 0 70px rgba(170,98,255,.14);
+    }
 
-.connect{background:linear-gradient(135deg,#00eaff,#5b6cff)}
-.disconnect{background:#ff4d6d;color:white}
+    .grid-lines{
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(rgba(84,217,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(84,217,255,.03) 1px, transparent 1px);
+      background-size:44px 44px;
+      mask-image:linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+      opacity:.55;
+    }
 
-/* GAME */
-.container{
-  text-align:center;
-  margin-top:40px;
-}
+    .wrapper{
+      position:relative;
+      z-index:2;
+      width:min(1220px, calc(100% - 24px));
+      margin:18px auto 24px;
+    }
 
-#target{
-  width:120px;
-  height:120px;
-  margin:40px auto;
-  border-radius:50%;
-  background:linear-gradient(135deg,#00eaff,#a259ff);
-  display:none;
-  box-shadow:0 0 30px cyan;
-}
+    .hero{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:18px 20px;
+      border:1px solid var(--border);
+      border-radius:28px;
+      background:linear-gradient(180deg, rgba(14,23,45,.92), rgba(7,11,23,.8));
+      backdrop-filter:blur(14px);
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+      position:relative;
+      overflow:hidden;
+    }
 
-#target.show{display:block}
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(84,217,255,.12), transparent 22%),
+        radial-gradient(circle at 90% 10%, rgba(170,98,255,.12), transparent 22%);
+      pointer-events:none;
+    }
 
-.bar{
-  width:80%;
-  height:20px;
-  margin:20px auto;
-  background:#222;
-  border-radius:10px;
-  overflow:hidden;
-}
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      min-width:0;
+    }
 
-.marker{
-  width:10px;
-  height:100%;
-  background:white;
-  position:relative;
-  left:0%;
-}
+    .logo-wrap{
+      width:78px;
+      height:78px;
+      flex:0 0 78px;
+      display:grid;
+      place-items:center;
+      border-radius:22px;
+      background:linear-gradient(135deg, rgba(84,217,255,.08), rgba(170,98,255,.10));
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:0 0 30px rgba(84,217,255,.08);
+    }
 
-.actions{margin-top:20px}
+    .logo-wrap img{
+      width:62px;
+      height:62px;
+      object-fit:contain;
+      display:block;
+      filter:drop-shadow(0 0 14px rgba(84,217,255,.18));
+    }
 
-.status{
-  margin-top:20px;
-  font-size:18px;
-}
-</style>
+    .hero h1{
+      margin:0 0 8px;
+      font-size:clamp(28px,4vw,46px);
+      line-height:1;
+      letter-spacing:-.05em;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
+      max-width:760px;
+    }
+
+    .hero-right{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      position:relative;
+      z-index:2;
+    }
+
+    .wallet-pill{
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      font-size:13px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+
+    .btn{
+      border:0;
+      cursor:pointer;
+      border-radius:18px;
+      padding:14px 16px;
+      color:#fff;
+      font-family:inherit;
+      font-weight:900;
+      letter-spacing:.01em;
+      transition:transform .16s ease, opacity .16s ease, box-shadow .16s ease;
+    }
+
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(1px)}
+    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+    .btn-primary{
+      background:linear-gradient(135deg,var(--cyan),var(--blue));
+      box-shadow:0 12px 28px rgba(77,124,255,.22);
+      color:#051018;
+    }
+
+    .btn-secondary{
+      background:linear-gradient(135deg,var(--violet),var(--blue));
+      box-shadow:0 12px 28px rgba(170,98,255,.18);
+    }
+
+    .btn-dark{
+      background:linear-gradient(180deg, rgba(22,31,57,1), rgba(12,18,34,1));
+      border:1px solid rgba(255,255,255,.07);
+      color:#fff;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:340px minmax(0,1fr);
+      gap:18px;
+      align-items:start;
+    }
+
+    .panel{
+      border:1px solid var(--border);
+      border-radius:28px;
+      background:var(--panel);
+      backdrop-filter:blur(14px);
+      box-shadow:var(--shadow);
+    }
+
+    .sidebar{
+      padding:16px;
+      position:sticky;
+      top:16px;
+    }
+
+    .section-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    .section-title h2,
+    .section-title h3{
+      margin:0;
+      font-size:18px;
+    }
+
+    .muted{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .stack{
+      display:grid;
+      gap:12px;
+    }
+
+    .stat{
+      padding:14px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.05);
+      background:linear-gradient(180deg, rgba(16,25,48,.94), rgba(9,14,28,.94));
+    }
+
+    .label{
+      color:var(--muted);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      margin-bottom:7px;
+    }
+
+    .big{
+      font-size:28px;
+      font-weight:900;
+      letter-spacing:-.04em;
+    }
+
+    .sub{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .load-box{
+      margin-top:14px;
+      padding:15px;
+      border-radius:22px;
+      border:1px solid rgba(84,217,255,.12);
+      background:linear-gradient(180deg, rgba(17,28,53,.96), rgba(8,14,28,.94));
+    }
+
+    .quick-load{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin:12px 0;
+    }
+
+    .pill, input{
+      font-family:inherit;
+    }
+
+    .pill{
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      border-radius:16px;
+      padding:12px 8px;
+      font-size:14px;
+      font-weight:800;
+      transition:.16s ease;
+    }
+
+    .pill:hover,
+    .pill.active{
+      transform:translateY(-1px);
+      border-color:rgba(84,217,255,.42);
+      background:rgba(84,217,255,.10);
+      box-shadow:0 0 0 1px rgba(84,217,255,.10) inset, 0 0 18px rgba(84,217,255,.08);
+    }
+
+    .custom-load{
+      display:flex;
+      gap:10px;
+    }
+
+    .custom-load input{
+      flex:1;
+      min-width:0;
+      padding:13px 14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      outline:none;
+    }
+
+    .custom-load input:focus{
+      border-color:rgba(84,217,255,.42);
+      box-shadow:0 0 0 4px rgba(84,217,255,.08);
+    }
+
+    .rules{
+      margin-top:14px;
+      padding:14px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(255,255,255,.02);
+    }
+
+    .rules ul{
+      margin:10px 0 0;
+      padding-left:18px;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
+    }
+
+    .game-panel{
+      padding:16px;
+      position:relative;
+    }
+
+    .topbar{
+      display:grid;
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .mini{
+      padding:13px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.05);
+      background:linear-gradient(180deg, rgba(16,25,48,.94), rgba(9,14,28,.94));
+    }
+
+    .mini .k{
+      color:var(--muted);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+    }
+
+    .mini .v{
+      margin-top:7px;
+      font-size:22px;
+      font-weight:900;
+      letter-spacing:-.03em;
+    }
+
+    .arena{
+      position:relative;
+      min-height:670px;
+      overflow:hidden;
+      border-radius:30px;
+      border:1px solid rgba(84,217,255,.16);
+      background:
+        radial-gradient(circle at 50% -10%, rgba(84,217,255,.12), transparent 26%),
+        radial-gradient(circle at 50% 105%, rgba(54,218,144,.10), transparent 28%),
+        linear-gradient(180deg, rgba(5,9,19,.98), rgba(8,12,22,.98));
+    }
+
+    .arena::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(rgba(84,217,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(84,217,255,.035) 1px, transparent 1px);
+      background-size:42px 42px;
+      opacity:.6;
+      pointer-events:none;
+    }
+
+    .overlay{
+      position:absolute;
+      inset:0;
+      z-index:9;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background:linear-gradient(180deg, rgba(6,10,20,.72), rgba(5,8,16,.86));
+      backdrop-filter:blur(8px);
+      transition:.25s ease;
+    }
+
+    .overlay.hidden{
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+    }
+
+    .overlay-card{
+      width:min(620px,100%);
+      padding:28px 24px;
+      border-radius:28px;
+      text-align:center;
+      border:1px solid rgba(255,255,255,.08);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(84,217,255,.10), transparent 24%),
+        radial-gradient(circle at 80% 0%, rgba(170,98,255,.10), transparent 24%),
+        linear-gradient(180deg, rgba(17,26,49,.96), rgba(7,11,22,.94));
+      box-shadow:0 25px 70px rgba(0,0,0,.42);
+    }
+
+    .overlay-logo{
+      width:84px;
+      height:84px;
+      margin:0 auto 16px;
+      display:block;
+      object-fit:contain;
+      filter:drop-shadow(0 0 20px rgba(84,217,255,.22));
+    }
+
+    .overlay-card h2{
+      margin:0 0 10px;
+      font-size:clamp(28px,4vw,42px);
+      letter-spacing:-.05em;
+    }
+
+    .overlay-card p{
+      margin:0 auto 20px;
+      max-width:520px;
+      color:var(--muted);
+      line-height:1.7;
+      font-size:15px;
+    }
+
+    .overlay-stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin:0 0 18px;
+    }
+
+    .overlay-stat{
+      padding:12px;
+      border-radius:18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.05);
+    }
+
+    .overlay-stat .k{
+      color:var(--muted);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+    }
+
+    .overlay-stat .v{
+      margin-top:6px;
+      font-size:20px;
+      font-weight:900;
+    }
+
+    .stage{
+      position:relative;
+      height:430px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      padding:38px 20px 0;
+    }
+
+    .arena-brand{
+      position:absolute;
+      left:18px;
+      top:18px;
+      width:62px;
+      height:62px;
+      padding:8px;
+      border-radius:18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+      box-shadow:0 0 22px rgba(84,217,255,.08);
+      z-index:2;
+      backdrop-filter:blur(8px);
+    }
+
+    .arena-brand img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+      filter:drop-shadow(0 0 16px rgba(84,217,255,.18));
+    }
+
+    .beam{
+      position:absolute;
+      left:50%;
+      top:0;
+      transform:translateX(-50%);
+      width:340px;
+      height:300px;
+      background:radial-gradient(circle at 50% 0%, rgba(84,217,255,.11), transparent 70%);
+      pointer-events:none;
+    }
+
+    .target-zone{
+      position:relative;
+      width:min(420px, 86%);
+      height:240px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+    }
+
+    .target-hole{
+      position:absolute;
+      bottom:18px;
+      width:250px;
+      height:70px;
+      border-radius:50%;
+      background:radial-gradient(circle at 50% 35%, rgba(0,0,0,.38), rgba(0,0,0,.88));
+      box-shadow:inset 0 18px 28px rgba(255,255,255,.03), 0 0 42px rgba(0,0,0,.35);
+    }
+
+    .target-ring{
+      position:absolute;
+      bottom:36px;
+      width:292px;
+      height:98px;
+      border-radius:50%;
+      border:2px solid rgba(84,217,255,.12);
+      box-shadow:0 0 34px rgba(84,217,255,.06);
+    }
+
+    .target{
+      position:absolute;
+      bottom:64px;
+      width:166px;
+      height:166px;
+      transform:translateY(120px) scale(.88);
+      transition:transform .16s ease;
+    }
+
+    .target.up{
+      transform:translateY(0) scale(1);
+    }
+
+    .target-core{
+      position:absolute;
+      inset:0;
+      border-radius:42px;
+      background:
+        radial-gradient(circle at 50% 22%, rgba(255,255,255,.12), transparent 24%),
+        linear-gradient(180deg, rgba(84,217,255,.98), rgba(77,124,255,.94) 50%, rgba(170,98,255,.98));
+      border:1px solid rgba(255,255,255,.22);
+      box-shadow:0 18px 55px rgba(84,217,255,.22), 0 0 36px rgba(170,98,255,.16);
+    }
+
+    .target-logo{
+      position:absolute;
+      left:50%;
+      top:18px;
+      width:58px;
+      height:58px;
+      transform:translateX(-50%);
+      object-fit:contain;
+      filter:drop-shadow(0 0 15px rgba(255,255,255,.18));
+      opacity:.97;
+    }
+
+    .target-core::before,
+    .target-core::after{
+      content:"";
+      position:absolute;
+      top:88px;
+      width:14px;
+      height:14px;
+      border-radius:50%;
+      background:#fff;
+      box-shadow:0 0 18px rgba(255,255,255,.35);
+    }
+
+    .target-core::before{left:42px}
+    .target-core::after{right:42px}
+
+    .target-mouth{
+      position:absolute;
+      left:50%;
+      top:114px;
+      width:54px;
+      height:16px;
+      transform:translateX(-50%);
+      border-radius:0 0 24px 24px;
+      background:rgba(8,12,22,.65);
+    }
+
+    .target-hit{
+      position:absolute;
+      inset:-8px;
+      border-radius:48px;
+      border:2px solid rgba(255,255,255,.55);
+      opacity:0;
+      transform:scale(.9);
+    }
+
+    .target.hit .target-hit{
+      animation:burst .32s ease;
+    }
+
+    @keyframes burst{
+      0%{opacity:0;transform:scale(.9)}
+      30%{opacity:1}
+      100%{opacity:0;transform:scale(1.22)}
+    }
+
+    .hammer-wrap{
+      position:absolute;
+      top:34px;
+      right:min(88px,8%);
+      width:200px;
+      height:200px;
+      pointer-events:none;
+      transform-origin:80% 15%;
+      transition:transform .08s ease;
+      filter:drop-shadow(0 14px 24px rgba(0,0,0,.30));
+    }
+
+    .hammer-wrap.swing{
+      transform:rotate(-54deg) translate(-14px, 20px);
+    }
+
+    .hammer-head{
+      position:absolute;
+      top:0;
+      left:18px;
+      width:110px;
+      height:54px;
+      border-radius:16px;
+      background:linear-gradient(180deg,#eef4ff,#8aa2c3);
+      box-shadow:inset 0 -8px 18px rgba(0,0,0,.18), inset 0 5px 9px rgba(255,255,255,.55);
+    }
+
+    .hammer-head::before,
+    .hammer-head::after{
+      content:"";
+      position:absolute;
+      top:7px;
+      width:17px;
+      height:40px;
+      border-radius:10px;
+      background:linear-gradient(180deg,#edf3ff,#8aa2c3);
+    }
+
+    .hammer-head::before{left:-9px}
+    .hammer-head::after{right:-9px}
+
+    .hammer-handle{
+      position:absolute;
+      top:34px;
+      left:91px;
+      width:22px;
+      height:142px;
+      border-radius:14px;
+      background:linear-gradient(180deg,#85562b,#4e3117);
+      transform:rotate(28deg);
+      box-shadow:inset 0 2px 5px rgba(255,255,255,.10);
+    }
+
+    .ground{
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      height:150px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(84,217,255,.10), transparent 34%),
+        linear-gradient(180deg, rgba(10,18,34,.88), rgba(5,9,16,.98));
+      border-top:1px solid rgba(84,217,255,.08);
+    }
+
+    .controls{
+      padding:0 18px 18px;
+      position:relative;
+      z-index:2;
+    }
+
+    .meter-card{
+      padding:18px;
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,.06);
+      background:linear-gradient(180deg, rgba(16,25,48,.94), rgba(9,14,28,.94));
+    }
+
+    .meter-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .meter-head strong{
+      font-size:18px;
+    }
+
+    .meter{
+      position:relative;
+      height:34px;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      box-shadow:inset 0 8px 18px rgba(0,0,0,.28);
+    }
+
+    .zones{
+      position:absolute;
+      inset:0;
+      display:grid;
+      grid-template-columns:18% 26% 28% 18% 10%;
+    }
+
+    .z-red{background:linear-gradient(180deg, rgba(255,111,136,.85), rgba(215,63,91,.90))}
+    .z-yellow{background:linear-gradient(180deg, rgba(255,201,91,.90), rgba(229,166,30,.94))}
+    .z-green{background:linear-gradient(180deg, rgba(54,218,144,.86), rgba(18,169,101,.92))}
+    .z-green2{background:linear-gradient(180deg, rgba(54,218,144,.98), rgba(18,181,105,.98))}
+    .z-gold{background:linear-gradient(180deg, rgba(255,237,129,.98), rgba(255,191,49,.98))}
+
+    .marker{
+      position:absolute;
+      top:2px;
+      bottom:2px;
+      width:16px;
+      border-radius:999px;
+      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(225,240,255,.88));
+      box-shadow:0 0 0 3px rgba(84,217,255,.12), 0 0 20px rgba(255,255,255,.35);
+      transform:translateX(-50%);
+      left:10%;
+    }
+
+    .legend{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:8px;
+      margin-top:12px;
+    }
+
+    .legend-item{
+      padding:10px 8px;
+      border-radius:14px;
+      text-align:center;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.05);
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .legend-item strong{
+      display:block;
+      margin-top:4px;
+      color:var(--text);
+      font-size:13px;
+    }
+
+    .action-row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    .result-box{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns:1.35fr .65fr;
+      gap:12px;
+    }
+
+    .result-panel,.feed-panel{
+      min-height:140px;
+      padding:16px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(255,255,255,.025);
+    }
+
+    .status{
+      font-size:28px;
+      font-weight:900;
+      letter-spacing:-.03em;
+      margin-bottom:6px;
+    }
+
+    .status.win{color:#9dffd0}
+    .status.lose{color:#ff9fb0}
+    .status.idle{color:var(--text)}
+
+    .status-text{
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
+    }
+
+    .feed-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-height:260px;
+      overflow:auto;
+      padding-right:2px;
+    }
+
+    .feed-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.04);
+      font-size:13px;
+    }
+
+    .feed-item span:last-child{
+      font-weight:900;
+      white-space:nowrap;
+    }
+
+    .feed-plus{color:#9dffd0}
+    .feed-minus{color:#ff9fb0}
+
+    .flash{
+      position:absolute;
+      inset:0;
+      background:radial-gradient(circle at 50% 44%, rgba(255,255,255,.18), transparent 28%);
+      opacity:0;
+      pointer-events:none;
+    }
+
+    .flash.show{animation:flash .18s ease}
+
+    @keyframes flash{
+      0%{opacity:0}
+      45%{opacity:1}
+      100%{opacity:0}
+    }
+
+    .floating{
+      position:absolute;
+      left:50%;
+      top:36%;
+      transform:translate(-50%,-50%);
+      font-size:36px;
+      font-weight:900;
+      letter-spacing:-.03em;
+      opacity:0;
+      pointer-events:none;
+      text-shadow:0 12px 30px rgba(0,0,0,.42);
+      z-index:5;
+    }
+
+    .floating.show.plus,
+    .floating.show.minus{
+      animation:floatup .9s ease forwards;
+    }
+
+    .floating.plus{color:#9dffd0}
+    .floating.minus{color:#ff9fb0}
+
+    @keyframes floatup{
+      0%{opacity:0;transform:translate(-50%,-20px) scale(.84)}
+      15%{opacity:1}
+      100%{opacity:0;transform:translate(-50%,-110px) scale(1.06)}
+    }
+
+    @media (max-width:1040px){
+      .layout{grid-template-columns:1fr}
+      .sidebar{position:static}
+      .topbar{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .hero{flex-direction:column;align-items:flex-start}
+      .hero-right{justify-content:flex-start}
+    }
+
+    @media (max-width:700px){
+      .wrapper{width:min(100% - 14px,100%);margin:12px auto 20px}
+      .hero,.sidebar,.game-panel{padding:14px;border-radius:22px}
+      .logo-wrap{width:68px;height:68px;flex-basis:68px}
+      .logo-wrap img{width:54px;height:54px}
+      .quick-load{grid-template-columns:1fr}
+      .custom-load{flex-direction:column}
+      .topbar{grid-template-columns:1fr 1fr}
+      .arena{min-height:700px;border-radius:24px}
+      .stage{height:390px;padding-top:30px}
+      .target-zone{width:100%}
+      .target-hole{width:210px;height:58px}
+      .target-ring{width:248px;height:84px}
+      .target{width:132px;height:132px;bottom:58px}
+      .target-logo{width:44px;height:44px;top:15px}
+      .target-core::before,.target-core::after{top:68px}
+      .target-mouth{top:90px}
+      .hammer-wrap{right:10px;top:28px;transform:scale(.78);transform-origin:top right}
+      .legend{grid-template-columns:repeat(2,1fr)}
+      .result-box{grid-template-columns:1fr}
+      .overlay-stats{grid-template-columns:1fr}
+      .floating{font-size:28px}
+      .arena-brand{width:54px;height:54px;top:12px;left:12px}
+    }
+  </style>
 </head>
-
 <body>
-
-<div class="stars"></div>
-
-<div class="header">
-  <div class="logo">
-    <img src="https://raw.githubusercontent.com/axionteam645/axion-dashboard/main/axion-logo.png">
-    <strong>AXION PLAY</strong>
+  <div class="sky">
+    <div class="stars"></div>
+    <div class="planet one"></div>
+    <div class="planet two"></div>
+    <div class="grid-lines"></div>
   </div>
 
-  <div class="wallet">
-    <span id="walletAddress">Not Connected</span>
-    <button id="connectBtn" class="connect">Connect</button>
+  <div class="wrapper">
+    <section class="hero">
+      <div class="brand">
+        <div class="logo-wrap">
+          <img src="https://raw.githubusercontent.com/axionteam645/axion-dashboard/main/axion-logo.png" alt="AXION Logo">
+        </div>
+        <div>
+          <h1>AXION HAMMER GAME</h1>
+          <p>Connect wallet, load demo AX, then enter the arena. Launch rounds, wait for the target to appear, and hit it at the best timing zone to stack score, combo, and in-game AX.</p>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="wallet-pill" id="walletAddress">Not Connected</div>
+        <button class="btn btn-primary" id="connectBtn">Connect Wallet</button>
+      </div>
+    </section>
+
+    <section class="layout">
+      <aside class="panel sidebar">
+        <div class="section-title">
+          <h2>Game Wallet</h2>
+          <span class="muted" id="walletStatusText">Demo mode</span>
+        </div>
+
+        <div class="stack">
+          <div class="stat">
+            <div class="label">Demo AX Balance</div>
+            <div class="big" id="walletBalance">0 AX</div>
+            <div class="sub">Load demo balance below. This is gameplay-only and does not use real token transfer.</div>
+          </div>
+
+          <div class="stat">
+            <div class="label">Current Combo</div>
+            <div class="big" id="comboValue">x0</div>
+            <div class="sub">Winning hits build combo bonus and increase scoring power.</div>
+          </div>
+
+          <div class="stat">
+            <div class="label">Best Score</div>
+            <div class="big" id="bestScoreValue">0</div>
+            <div class="sub">Your highest score on this page session.</div>
+          </div>
+        </div>
+
+        <div class="load-box">
+          <div class="section-title" style="margin-bottom:8px;">
+            <h3>Load Demo AX</h3>
+            <span class="muted">Fast start</span>
+          </div>
+
+          <div class="quick-load">
+            <button class="pill" data-amount="100">100 AX</button>
+            <button class="pill" data-amount="500">500 AX</button>
+            <button class="pill" data-amount="1000">1000 AX</button>
+          </div>
+
+          <button class="btn btn-primary" id="loadSelectedBtn" style="width:100%;">Load Selected</button>
+
+          <div class="custom-load" style="margin-top:10px;">
+            <input type="number" id="customAmount" min="1" step="1" placeholder="Custom AX amount">
+            <button class="btn btn-secondary" id="loadCustomBtn">Load</button>
+          </div>
+        </div>
+
+        <div class="rules">
+          <div class="section-title" style="margin-bottom:4px;">
+            <h3>Reward Rules</h3>
+          </div>
+          <ul>
+            <li>Red zone: <strong>-12 AX</strong></li>
+            <li>Yellow zone: <strong>+4 AX</strong></li>
+            <li>Green zone: <strong>+10 AX</strong></li>
+            <li>Boost zone: <strong>+18 AX</strong></li>
+            <li>Gold zone: <strong>+32 AX</strong></li>
+            <li>Miss or empty swing: <strong>-15 AX</strong></li>
+            <li>Combo bonus starts after 3 wins in a row</li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="panel game-panel">
+        <div class="topbar">
+          <div class="mini">
+            <div class="k">Timer</div>
+            <div class="v" id="timerValue">30s</div>
+          </div>
+          <div class="mini">
+            <div class="k">Score</div>
+            <div class="v" id="scoreValue">0</div>
+          </div>
+          <div class="mini">
+            <div class="k">Level</div>
+            <div class="v" id="levelValue">1</div>
+          </div>
+          <div class="mini">
+            <div class="k">Wins</div>
+            <div class="v" id="winsValue">0</div>
+          </div>
+          <div class="mini">
+            <div class="k">Losses</div>
+            <div class="v" id="lossesValue">0</div>
+          </div>
+          <div class="mini">
+            <div class="k">Wallet</div>
+            <div class="v" id="connectedShort">--</div>
+          </div>
+        </div>
+
+        <div class="arena">
+          <div class="overlay" id="startOverlay">
+            <div class="overlay-card">
+              <img class="overlay-logo" src="https://raw.githubusercontent.com/axionteam645/axion-dashboard/main/axion-logo.png" alt="AXION Logo">
+              <h2>ENTER THE AXION ARENA</h2>
+              <p>Connect wallet if you want the full branded experience, load demo AX from the left panel, then start the game. You have 30 seconds to hit as many targets as possible. Better timing means bigger rewards.</p>
+
+              <div class="overlay-stats">
+                <div class="overlay-stat">
+                  <div class="k">Mode</div>
+                  <div class="v">Arcade Demo</div>
+                </div>
+                <div class="overlay-stat">
+                  <div class="k">Session</div>
+                  <div class="v">30 Seconds</div>
+                </div>
+                <div class="overlay-stat">
+                  <div class="k">Goal</div>
+                  <div class="v">Max Score</div>
+                </div>
+              </div>
+
+              <button class="btn btn-primary" id="startGameBtn">Start Game</button>
+            </div>
+          </div>
+
+          <div class="overlay hidden" id="gameOverOverlay">
+            <div class="overlay-card">
+              <img class="overlay-logo" src="https://raw.githubusercontent.com/axionteam645/axion-dashboard/main/axion-logo.png" alt="AXION Logo">
+              <h2>GAME OVER</h2>
+              <p>Your session is complete. Review your score, demo AX balance, and best combo, then jump back in.</p>
+
+              <div class="overlay-stats">
+                <div class="overlay-stat">
+                  <div class="k">Final Score</div>
+                  <div class="v" id="finalScoreText">0</div>
+                </div>
+                <div class="overlay-stat">
+                  <div class="k">Final AX</div>
+                  <div class="v" id="finalBalanceText">0 AX</div>
+                </div>
+                <div class="overlay-stat">
+                  <div class="k">Best Combo</div>
+                  <div class="v" id="finalComboText">x0</div>
+                </div>
+              </div>
+
+              <button class="btn btn-secondary" id="playAgainBtn">Play Again</button>
+            </div>
+          </div>
+
+          <div class="arena-brand">
+            <img src="https://raw.githubusercontent.com/axionteam645/axion-dashboard/main/axion-logo.png" alt="AXION Logo">
+          </div>
+
+          <div class="flash" id="flash"></div>
+          <div class="floating" id="floatingText">+10 AX</div>
+          <div class="beam"></div>
+
+          <div class="stage">
+            <div class="target-zone">
+              <div class="target-ring"></div>
+              <div class="target-hole"></div>
+
+              <div class="target" id="target">
+                <div class="target-core"></div>
+                <img class="target-logo" src="https://raw.githubusercontent.com/axionteam645/axion-dashboard/main/axion-logo.png" alt="AXION Symbol">
+                <div class="target-mouth"></div>
+                <div class="target-hit"></div>
+              </div>
+            </div>
+
+            <div class="hammer-wrap" id="hammer">
+              <div class="hammer-head"></div>
+              <div class="hammer-handle"></div>
+            </div>
+
+            <div class="ground"></div>
+          </div>
+
+          <div class="controls">
+            <div class="meter-card">
+              <div class="meter-head">
+                <div>
+                  <strong>Power Timing Meter</strong>
+                  <div class="muted">Click <strong>Hammer Strike</strong> while the target is visible.</div>
+                </div>
+                <div class="muted" id="meterState">Idle</div>
+              </div>
+
+              <div class="meter">
+                <div class="zones">
+                  <div class="z-red"></div>
+                  <div class="z-yellow"></div>
+                  <div class="z-green"></div>
+                  <div class="z-green2"></div>
+                  <div class="z-gold"></div>
+                </div>
+                <div class="marker" id="marker"></div>
+              </div>
+
+              <div class="legend">
+                <div class="legend-item">Red<strong>-12 AX</strong></div>
+                <div class="legend-item">Yellow<strong>+4 AX</strong></div>
+                <div class="legend-item">Green<strong>+10 AX</strong></div>
+                <div class="legend-item">Boost<strong>+18 AX</strong></div>
+                <div class="legend-item">Gold<strong>+32 AX</strong></div>
+              </div>
+
+              <div class="action-row">
+                <button class="btn btn-primary" id="roundBtn" disabled>Launch Round</button>
+                <button class="btn btn-secondary" id="hitBtn" disabled>Hammer Strike</button>
+                <button class="btn btn-dark" id="resetBtn">Reset Demo</button>
+              </div>
+
+              <div class="result-box">
+                <div class="result-panel">
+                  <div class="status idle" id="resultStatus">Load AX and start the game</div>
+                  <div class="status-text" id="resultText">Launch a round, wait for the target to appear, then hit it at the best timing zone.</div>
+                </div>
+
+                <div class="feed-panel">
+                  <div class="section-title" style="margin-bottom:10px;">
+                    <h3>Recent Hits</h3>
+                    <span class="muted">Session log</span>
+                  </div>
+                  <div class="feed-list" id="feedList"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </section>
   </div>
-</div>
 
-<div class="container">
+  <script>
+    const WALLETCONNECT_PROJECT_ID = '44e7b575eead4c444613bf481554ba7d';
 
-  <h1>AXION HAMMER</h1>
-  <div class="status" id="status">Connect wallet to play</div>
+    const state = {
+      connected: false,
+      walletAddress: '',
+      wcProvider: null,
+      balance: 0,
+      combo: 0,
+      bestCombo: 0,
+      wins: 0,
+      losses: 0,
+      selectedAmount: 100,
+      markerPos: 10,
+      markerDir: 1,
+      meterRunning: false,
+      targetVisible: false,
+      roundActive: false,
+      roundResolved: false,
+      gameRunning: false,
+      sessionTime: 30,
+      timerRemaining: 30,
+      timerInterval: null,
+      meterFrame: null,
+      targetDownTimeout: null,
+      score: 0,
+      bestScore: 0,
+      level: 1
+    };
 
-  <div id="target"></div>
+    const walletAddressEl = document.getElementById('walletAddress');
+    const walletStatusText = document.getElementById('walletStatusText');
+    const connectedShort = document.getElementById('connectedShort');
+    const connectBtn = document.getElementById('connectBtn');
 
-  <div class="bar">
-    <div class="marker" id="marker"></div>
-  </div>
+    const walletBalance = document.getElementById('walletBalance');
+    const comboValue = document.getElementById('comboValue');
+    const bestScoreValue = document.getElementById('bestScoreValue');
+    const timerValue = document.getElementById('timerValue');
+    const scoreValue = document.getElementById('scoreValue');
+    const levelValue = document.getElementById('levelValue');
+    const winsValue = document.getElementById('winsValue');
+    const lossesValue = document.getElementById('lossesValue');
+    const resultStatus = document.getElementById('resultStatus');
+    const resultText = document.getElementById('resultText');
+    const meterState = document.getElementById('meterState');
+    const marker = document.getElementById('marker');
+    const target = document.getElementById('target');
+    const hammer = document.getElementById('hammer');
+    const flash = document.getElementById('flash');
+    const floatingText = document.getElementById('floatingText');
+    const feedList = document.getElementById('feedList');
+    const roundBtn = document.getElementById('roundBtn');
+    const hitBtn = document.getElementById('hitBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const loadSelectedBtn = document.getElementById('loadSelectedBtn');
+    const loadCustomBtn = document.getElementById('loadCustomBtn');
+    const customAmount = document.getElementById('customAmount');
+    const pills = [...document.querySelectorAll('.pill')];
+    const startOverlay = document.getElementById('startOverlay');
+    const gameOverOverlay = document.getElementById('gameOverOverlay');
+    const startGameBtn = document.getElementById('startGameBtn');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+    const finalScoreText = document.getElementById('finalScoreText');
+    const finalBalanceText = document.getElementById('finalBalanceText');
+    const finalComboText = document.getElementById('finalComboText');
 
-  <div class="actions">
-    <button onclick="startRound()">Start</button>
-    <button onclick="hit()">HIT</button>
-  </div>
+    function shortAddress(addr){
+      if(!addr) return '--';
+      return addr.slice(0,6) + '...' + addr.slice(-4);
+    }
 
-</div>
+    function updateWalletUI(){
+      walletAddressEl.textContent = state.connected ? shortAddress(state.walletAddress) : 'Not Connected';
+      walletStatusText.textContent = state.connected ? 'Wallet connected' : 'Demo mode';
+      connectedShort.textContent = state.connected ? shortAddress(state.walletAddress) : '--';
+      connectBtn.textContent = state.connected ? 'Disconnect' : 'Connect Wallet';
+      connectBtn.className = state.connected ? 'btn btn-dark' : 'btn btn-primary';
+    }
 
-<script>
-let provider, signer, address;
-let connected=false;
+    function updateLevel() {
+      state.level = Math.min(9, 1 + Math.floor(state.score / 120));
+    }
 
-/* WALLET */
-const connectBtn=document.getElementById("connectBtn");
-const walletText=document.getElementById("walletAddress");
+    function updateUI() {
+      walletBalance.textContent = `${Math.max(0, Math.floor(state.balance))} AX`;
+      comboValue.textContent = `x${state.combo}`;
+      bestScoreValue.textContent = state.bestScore;
+      timerValue.textContent = `${state.timerRemaining}s`;
+      scoreValue.textContent = state.score;
+      levelValue.textContent = state.level;
+      winsValue.textContent = state.wins;
+      lossesValue.textContent = state.losses;
 
-connectBtn.onclick=async()=>{
-  if(!connected){
-    try{
-      if(window.ethereum){
-        provider=new ethers.BrowserProvider(window.ethereum);
-        await provider.send("eth_requestAccounts",[]);
-      }else{
-        provider=await window.EthereumProvider.init({
-          projectId:"44e7b575eead4c444613bf481554ba7d",
-          chains:[56],
-          showQrModal:true
-        });
-        await provider.enable();
-        provider=new ethers.BrowserProvider(provider);
+      roundBtn.disabled = !state.gameRunning || state.roundActive || state.balance <= 0;
+      hitBtn.disabled = !state.gameRunning || !state.roundActive;
+      startGameBtn.disabled = state.balance <= 0;
+      updateWalletUI();
+    }
+
+    function setMessage(title, text, mode = 'idle') {
+      resultStatus.textContent = title;
+      resultStatus.className = `status ${mode}`;
+      resultText.textContent = text;
+    }
+
+    function addFeed(text, delta) {
+      const item = document.createElement('div');
+      item.className = 'feed-item';
+      const cls = delta >= 0 ? 'feed-plus' : 'feed-minus';
+      const sign = delta >= 0 ? '+' : '';
+      item.innerHTML = `<span>${text}</span><span class="${cls}">${sign}${delta} AX</span>`;
+      feedList.prepend(item);
+      while (feedList.children.length > 8) {
+        feedList.removeChild(feedList.lastChild);
+      }
+    }
+
+    function showFloating(delta) {
+      floatingText.textContent = `${delta >= 0 ? '+' : ''}${delta} AX`;
+      floatingText.className = `floating show ${delta >= 0 ? 'plus' : 'minus'}`;
+      setTimeout(() => {
+        floatingText.className = `floating ${delta >= 0 ? 'plus' : 'minus'}`;
+      }, 900);
+    }
+
+    function flashArena() {
+      flash.classList.remove('show');
+      void flash.offsetWidth;
+      flash.classList.add('show');
+    }
+
+    function swingHammer() {
+      hammer.classList.remove('swing');
+      void hammer.offsetWidth;
+      hammer.classList.add('swing');
+      setTimeout(() => hammer.classList.remove('swing'), 120);
+    }
+
+    function hitTargetEffect() {
+      target.classList.remove('hit');
+      void target.offsetWidth;
+      target.classList.add('hit');
+      setTimeout(() => target.classList.remove('hit'), 260);
+    }
+
+    function setTargetVisible(visible) {
+      state.targetVisible = visible;
+      target.classList.toggle('up', visible);
+    }
+
+    function stopMeter() {
+      state.meterRunning = false;
+      if (state.meterFrame) cancelAnimationFrame(state.meterFrame);
+      state.meterFrame = null;
+    }
+
+    function animateMeter() {
+      if (!state.meterRunning) return;
+      const speed = 1.25 + (state.level - 1) * 0.3;
+      state.markerPos += state.markerDir * speed;
+
+      if (state.markerPos >= 99) {
+        state.markerPos = 99;
+        state.markerDir = -1;
+      }
+      if (state.markerPos <= 1) {
+        state.markerPos = 1;
+        state.markerDir = 1;
       }
 
-      signer=await provider.getSigner();
-      address=await signer.getAddress();
-
-      walletText.innerText=address.slice(0,6)+"..."+address.slice(-4);
-      connectBtn.innerText="Disconnect";
-      connectBtn.className="disconnect";
-      connected=true;
-
-      document.getElementById("status").innerText="Wallet Connected ✔";
-
-    }catch(e){
-      alert("Connection failed");
+      marker.style.left = `${state.markerPos}%`;
+      state.meterFrame = requestAnimationFrame(animateMeter);
     }
-  }else{
-    connected=false;
-    walletText.innerText="Not Connected";
-    connectBtn.innerText="Connect";
-    connectBtn.className="connect";
-  }
-};
 
-/* GAME */
-let pos=0;
-let dir=1;
-let running=false;
+    function getZoneOutcome(pos) {
+      if (pos < 18) return { label: 'Red Zone', delta: -12, scoreDelta: -8, win: false };
+      if (pos < 44) return { label: 'Yellow Zone', delta: 4, scoreDelta: 14, win: true };
+      if (pos < 72) return { label: 'Green Zone', delta: 10, scoreDelta: 26, win: true };
+      if (pos < 90) return { label: 'Boost Zone', delta: 18, scoreDelta: 42, win: true };
+      return { label: 'Gold Zone', delta: 32, scoreDelta: 68, win: true };
+    }
 
-function animate(){
-  if(!running) return;
-  pos+=dir*2;
+    function finishGame() {
+      state.gameRunning = false;
+      state.roundActive = false;
+      state.roundResolved = true;
+      stopMeter();
+      clearTimeout(state.targetDownTimeout);
+      setTargetVisible(false);
+      meterState.textContent = 'Session complete';
 
-  if(pos>100){dir=-1}
-  if(pos<0){dir=1}
+      finalScoreText.textContent = state.score;
+      finalBalanceText.textContent = `${Math.floor(state.balance)} AX`;
+      finalComboText.textContent = `x${state.bestCombo}`;
 
-  document.getElementById("marker").style.left=pos+"%";
-  requestAnimationFrame(animate);
-}
+      gameOverOverlay.classList.remove('hidden');
+      updateUI();
+    }
 
-function startRound(){
-  if(!connected){
-    alert("Connect wallet first");
-    return;
-  }
+    function resolveRound(delta, scoreDelta, zoneLabel, reason, win) {
+      if (state.roundResolved || !state.gameRunning) return;
 
-  running=true;
-  animate();
+      state.roundResolved = true;
+      state.roundActive = false;
+      stopMeter();
+      clearTimeout(state.targetDownTimeout);
+      setTargetVisible(false);
 
-  setTimeout(()=>{
-    document.getElementById("target").classList.add("show");
+      state.balance += delta;
+      if (state.balance < 0) state.balance = 0;
 
-    setTimeout(()=>{
-      document.getElementById("target").classList.remove("show");
-      running=false;
-    },1500);
+      if (win) {
+        state.wins += 1;
+        state.combo += 1;
+        state.bestCombo = Math.max(state.bestCombo, state.combo);
 
-  },800);
-}
+        let comboBonusAX = 0;
+        let comboBonusScore = 0;
 
-function hit(){
-  if(!running){
-    document.getElementById("status").innerText="Miss ❌";
-    return;
-  }
+        if (state.combo >= 3) {
+          comboBonusAX = 2 * Math.min(state.combo, 5);
+          comboBonusScore = 5 * Math.min(state.combo, 5);
+          state.balance += comboBonusAX;
+          delta += comboBonusAX;
+          scoreDelta += comboBonusScore;
+          reason += ` Combo bonus +${comboBonusAX} AX.`;
+        }
 
-  running=false;
+        state.score = Math.max(0, state.score + scoreDelta);
+        setMessage(`${zoneLabel}!`, `${reason} Perfect timing pays more.`, 'win');
+      } else {
+        state.losses += 1;
+        state.combo = 0;
+        state.score = Math.max(0, state.score + scoreDelta);
+        setMessage(`${zoneLabel}`, `${reason} Bad timing cost you AX.`, 'lose');
+      }
 
-  let result;
+      updateLevel();
+      state.bestScore = Math.max(state.bestScore, state.score);
 
-  if(pos<20){
-    result="Bad ❌";
-  }else if(pos<50){
-    result="Good ✔";
-  }else if(pos<80){
-    result="Strong 🔥";
-  }else{
-    result="CRITICAL 💥";
-  }
+      swingHammer();
+      flashArena();
+      if (win) hitTargetEffect();
+      showFloating(delta);
+      addFeed(`${zoneLabel}`, delta);
+      meterState.textContent = 'Round complete';
+      updateUI();
 
-  document.getElementById("status").innerText=result;
-}
-</script>
+      if (state.balance <= 0 && state.gameRunning) {
+        setTimeout(finishGame, 250);
+      }
+    }
 
+    function startRound() {
+      if (!state.gameRunning || state.balance <= 0 || state.roundActive) return;
+
+      state.roundActive = true;
+      state.roundResolved = false;
+      meterState.textContent = 'Charging';
+      state.markerPos = 10 + Math.random() * 20;
+      state.markerDir = Math.random() > 0.5 ? 1 : -1;
+      marker.style.left = `${state.markerPos}%`;
+      setTargetVisible(false);
+      updateUI();
+
+      setMessage('Round started', 'Watch the meter, wait for the target, then strike at the right time.', 'idle');
+
+      const appearDelay = Math.max(320, 650 - (state.level - 1) * 30) + Math.random() * 450;
+      const visibleDuration = Math.max(550, 1300 - (state.level - 1) * 70) + Math.random() * 240;
+
+      state.meterRunning = true;
+      animateMeter();
+
+      setTimeout(() => {
+        if (!state.roundActive || state.roundResolved || !state.gameRunning) return;
+
+        setTargetVisible(true);
+        meterState.textContent = 'Target visible';
+
+        state.targetDownTimeout = setTimeout(() => {
+          if (!state.roundResolved && state.gameRunning) {
+            resolveRound(-15, -10, 'Missed Target', 'You failed to strike before the target disappeared.', false);
+          }
+        }, visibleDuration);
+      }, appearDelay);
+    }
+
+    function strike() {
+      if (!state.gameRunning || !state.roundActive || state.roundResolved) return;
+
+      swingHammer();
+
+      if (!state.targetVisible) {
+        resolveRound(-15, -10, 'Empty Swing', 'You struck before the target appeared.', false);
+        return;
+      }
+
+      const outcome = getZoneOutcome(state.markerPos);
+      resolveRound(outcome.delta, outcome.scoreDelta, outcome.label, `Meter stopped at ${state.markerPos.toFixed(0)}%.`, outcome.win);
+    }
+
+    function startGameSession() {
+      if (state.balance <= 0) {
+        setMessage('Load AX first', 'Add some demo AX from the left panel before starting the game.', 'lose');
+        return;
+      }
+
+      gameOverOverlay.classList.add('hidden');
+      startOverlay.classList.add('hidden');
+
+      state.gameRunning = true;
+      state.roundActive = false;
+      state.roundResolved = true;
+      state.timerRemaining = state.sessionTime;
+      state.score = 0;
+      state.level = 1;
+      state.wins = 0;
+      state.losses = 0;
+      state.combo = 0;
+      state.bestCombo = 0;
+      feedList.innerHTML = '';
+      setTargetVisible(false);
+      stopMeter();
+      marker.style.left = '10%';
+      meterState.textContent = 'Session live';
+      setMessage('Game started', 'Launch a round and strike when the target appears. You have 30 seconds.', 'win');
+
+      clearInterval(state.timerInterval);
+      state.timerInterval = setInterval(() => {
+        state.timerRemaining -= 1;
+        if (state.timerRemaining <= 0) {
+          state.timerRemaining = 0;
+          clearInterval(state.timerInterval);
+          finishGame();
+        }
+        updateUI();
+      }, 1000);
+
+      updateUI();
+    }
+
+    function resetDemo() {
+      clearInterval(state.timerInterval);
+      stopMeter();
+      clearTimeout(state.targetDownTimeout);
+
+      state.balance = 0;
+      state.combo = 0;
+      state.bestCombo = 0;
+      state.wins = 0;
+      state.losses = 0;
+      state.markerPos = 10;
+      state.markerDir = 1;
+      state.meterRunning = false;
+      state.targetVisible = false;
+      state.roundActive = false;
+      state.roundResolved = false;
+      state.gameRunning = false;
+      state.timerRemaining = state.sessionTime;
+      state.score = 0;
+      state.level = 1;
+
+      marker.style.left = '10%';
+      meterState.textContent = 'Idle';
+      setTargetVisible(false);
+      feedList.innerHTML = '';
+      startOverlay.classList.remove('hidden');
+      gameOverOverlay.classList.add('hidden');
+
+      setMessage('Load AX and start the game', 'Launch a round, wait for the target to appear, then hit it at the best timing zone.', 'idle');
+      updateUI();
+    }
+
+    function loadAX(amount) {
+      const value = Number(amount);
+      if (!Number.isFinite(value) || value <= 0) return;
+
+      state.balance += Math.floor(value);
+      setMessage('Demo AX loaded', `${Math.floor(value)} AX added to your in-game wallet.`, 'win');
+      addFeed('Demo AX loaded', Math.floor(value));
+      updateUI();
+    }
+
+    async function connectWallet() {
+      try {
+        if (state.connected) {
+          if (state.wcProvider && typeof state.wcProvider.disconnect === 'function') {
+            try { await state.wcProvider.disconnect(); } catch(e) {}
+          }
+          state.connected = false;
+          state.walletAddress = '';
+          state.wcProvider = null;
+          updateUI();
+          return;
+        }
+
+        if (window.ethereum) {
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          await provider.send('eth_requestAccounts', []);
+          const signer = await provider.getSigner();
+          state.walletAddress = await signer.getAddress();
+          state.connected = true;
+          state.wcProvider = null;
+          updateUI();
+          return;
+        }
+
+        const wc = await window.EthereumProvider.init({
+          projectId: WALLETCONNECT_PROJECT_ID,
+          chains: [56],
+          showQrModal: true,
+          optionalChains: [56],
+          methods: ['eth_sendTransaction','personal_sign','eth_signTypedData','eth_sign','eth_requestAccounts'],
+          events: ['chainChanged','accountsChanged']
+        });
+
+        await wc.enable();
+        const provider = new ethers.BrowserProvider(wc);
+        const signer = await provider.getSigner();
+        state.walletAddress = await signer.getAddress();
+        state.connected = true;
+        state.wcProvider = wc;
+        updateUI();
+      } catch (err) {
+        console.error(err);
+        alert('Wallet connection failed.');
+      }
+    }
+
+    pills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        state.selectedAmount = Number(pill.dataset.amount);
+      });
+    });
+    pills[0].classList.add('active');
+
+    connectBtn.addEventListener('click', connectWallet);
+    loadSelectedBtn.addEventListener('click', () => loadAX(state.selectedAmount));
+    loadCustomBtn.addEventListener('click', () => loadAX(customAmount.value));
+    customAmount.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') loadAX(customAmount.value);
+    });
+
+    roundBtn.addEventListener('click', startRound);
+    hitBtn.addEventListener('click', strike);
+    resetBtn.addEventListener('click', resetDemo);
+    startGameBtn.addEventListener('click', startGameSession);
+    playAgainBtn.addEventListener('click', startGameSession);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (state.gameRunning && state.roundActive) strike();
+      }
+      if (e.key.toLowerCase() === 'r') {
+        if (state.gameRunning && !state.roundActive) startRound();
+      }
+    });
+
+    updateUI();
+  </script>
 </body>
 </html>
