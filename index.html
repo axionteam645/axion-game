@@ -1,158 +1,1202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>AXION Craft V2</title>
-<style>
-body { margin:0; overflow:hidden; font-family:Arial; background:#050816; color:#fff;}
-canvas { display:block; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AXION Hammer Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg1: #060816;
+      --bg2: #0d1631;
+      --panel: rgba(10, 17, 35, 0.76);
+      --border: rgba(113, 188, 255, 0.22);
+      --text: #e8f3ff;
+      --muted: #8da9cc;
+      --cyan: #53d8ff;
+      --blue: #4b7bff;
+      --violet: #a05bff;
+      --green: #31d68b;
+      --yellow: #ffca57;
+      --red: #ff6b81;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    }
 
-#menu {
-position:absolute; inset:0; display:flex; justify-content:center; align-items:center; flex-direction:column;
-background:#050816;
-}
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; color: var(--text); background: radial-gradient(circle at top left, rgba(83,216,255,0.14), transparent 25%), radial-gradient(circle at top right, rgba(160,91,255,0.18), transparent 22%), linear-gradient(180deg, var(--bg2), var(--bg1)); min-height: 100%; }
 
-button {
-padding:15px 30px;
-font-size:18px;
-cursor:pointer;
-background:#0ff;
-border:none;
-border-radius:10px;
-}
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
 
-#hud {
-position:absolute; inset:0; display:none;
-}
+    .stars,
+    .stars::before,
+    .stars::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.65), transparent 70%),
+        radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,.5), transparent 70%),
+        radial-gradient(2px 2px at 80% 68%, rgba(83,216,255,.5), transparent 70%),
+        radial-gradient(1px 1px at 34% 78%, rgba(255,255,255,.45), transparent 70%),
+        radial-gradient(2px 2px at 55% 52%, rgba(160,91,255,.45), transparent 70%),
+        radial-gradient(1px 1px at 10% 90%, rgba(255,255,255,.35), transparent 70%);
+      pointer-events: none;
+    }
 
-#crosshair {
-position:absolute; left:50%; top:50%;
-width:20px; height:20px;
-transform:translate(-50%,-50%);
-}
+    .stars::before { transform: scale(1.2); opacity: .55; }
+    .stars::after { transform: scale(1.5); opacity: .3; }
 
-#crosshair:before, #crosshair:after {
-content:""; position:absolute; background:#fff;
-}
+    .container {
+      width: min(1180px, calc(100% - 28px));
+      margin: 28px auto;
+      position: relative;
+      z-index: 2;
+    }
 
-#crosshair:before { width:2px; height:20px; left:9px;}
-#crosshair:after { height:2px; width:20px; top:9px;}
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(15, 24, 45, 0.9), rgba(8, 12, 24, 0.78));
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      margin-bottom: 18px;
+    }
 
-.panel {
-position:absolute;
-background:rgba(0,0,0,0.5);
-padding:10px;
-border-radius:10px;
-}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
 
-#info { top:10px; left:10px;}
-#inventory { top:10px; right:10px;}
-</style>
+    .logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.65), transparent 16%),
+        linear-gradient(135deg, rgba(83,216,255,.95), rgba(75,123,255,.9) 45%, rgba(160,91,255,.95));
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 30px rgba(83, 216, 255, 0.35), 0 0 60px rgba(160, 91, 255, 0.16);
+      position: relative;
+    }
+
+    .logo::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: inherit;
+      border: 1px solid rgba(255,255,255,.25);
+    }
+
+    .logo span {
+      font-weight: 800;
+      font-size: 26px;
+      color: white;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 12px rgba(0,0,0,.35);
+    }
+
+    .hero h1 {
+      margin: 0 0 6px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 720px;
+      line-height: 1.6;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(83, 216, 255, 0.08);
+      border: 1px solid rgba(83, 216, 255, 0.18);
+      color: #ccf7ff;
+      font-weight: 700;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .side {
+      padding: 18px;
+      position: sticky;
+      top: 20px;
+    }
+
+    .panel-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .panel-title h2,
+    .panel-title h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .cards {
+      display: grid;
+      gap: 12px;
+    }
+
+    .stat-card {
+      padding: 14px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(19,28,50,.92), rgba(11,16,31,.9));
+      border: 1px solid rgba(113, 188, 255, 0.16);
+    }
+
+    .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .value {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .subvalue {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .deposit-box {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(18, 30, 56, 0.95), rgba(11, 18, 34, 0.9));
+      border: 1px solid rgba(83,216,255,.16);
+    }
+
+    .deposit-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 14px 0 12px;
+    }
+
+    .pill,
+    button,
+    input {
+      font-family: inherit;
+    }
+
+    .pill {
+      border: 1px solid rgba(113,188,255,.18);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      border-radius: 16px;
+      padding: 12px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: .18s ease;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .pill:hover,
+    .pill.active {
+      transform: translateY(-1px);
+      border-color: rgba(83,216,255,.55);
+      background: rgba(83,216,255,.1);
+      box-shadow: 0 0 0 1px rgba(83,216,255,.18) inset, 0 0 18px rgba(83,216,255,.12);
+    }
+
+    .custom-deposit {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .custom-deposit input {
+      flex: 1;
+      min-width: 0;
+      padding: 14px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(113,188,255,.2);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      outline: none;
+    }
+
+    .custom-deposit input:focus {
+      border-color: rgba(83,216,255,.55);
+      box-shadow: 0 0 0 4px rgba(83,216,255,.08);
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      border-radius: 18px;
+      padding: 14px 16px;
+      color: white;
+      font-weight: 800;
+      letter-spacing: .01em;
+      transition: transform .16s ease, opacity .16s ease, box-shadow .16s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(1px); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      box-shadow: 0 12px 30px rgba(75, 123, 255, 0.28);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, rgba(160,91,255,.95), rgba(75,123,255,.95));
+      box-shadow: 0 12px 30px rgba(160, 91, 255, 0.22);
+    }
+
+    .btn-dark {
+      background: linear-gradient(180deg, rgba(21,31,57,1), rgba(13,18,35,1));
+      border: 1px solid rgba(113,188,255,.18);
+    }
+
+    .btn.full { width: 100%; }
+
+    .rules {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(113,188,255,.14);
+      background: rgba(255,255,255,.02);
+    }
+
+    .rules ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .game {
+      padding: 18px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .mini-card {
+      padding: 14px;
+      border-radius: 22px;
+      border: 1px solid rgba(113,188,255,.14);
+      background: linear-gradient(180deg, rgba(15,24,45,.92), rgba(9,14,27,.9));
+    }
+
+    .mini-card .k { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
+    .mini-card .v { margin-top: 8px; font-size: 22px; font-weight: 800; }
+
+    .arena {
+      position: relative;
+      min-height: 620px;
+      border-radius: 30px;
+      border: 1px solid rgba(113,188,255,.18);
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% -5%, rgba(83,216,255,.12), transparent 22%),
+        radial-gradient(circle at 50% 95%, rgba(49,214,139,.1), transparent 28%),
+        linear-gradient(180deg, rgba(9,13,27,.98), rgba(10,14,26,.94));
+    }
+
+    .arena::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(83,216,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(83,216,255,.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: .55;
+      pointer-events: none;
+    }
+
+    .stage {
+      position: relative;
+      height: 380px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 40px 20px 0;
+    }
+
+    .target-zone {
+      position: relative;
+      width: min(420px, 86%);
+      height: 220px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .target-hole {
+      position: absolute;
+      bottom: 10px;
+      width: 240px;
+      height: 68px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 35%, rgba(0,0,0,.4), rgba(0,0,0,.86));
+      box-shadow: inset 0 18px 28px rgba(255,255,255,.03), 0 0 40px rgba(0,0,0,.35);
+    }
+
+    .target-ring {
+      position: absolute;
+      bottom: 28px;
+      width: 280px;
+      height: 95px;
+      border-radius: 50%;
+      border: 2px solid rgba(83,216,255,.12);
+      box-shadow: 0 0 40px rgba(83,216,255,.08);
+    }
+
+    .target {
+      position: absolute;
+      bottom: 55px;
+      width: 150px;
+      height: 150px;
+      transform: translateY(100px) scale(.9);
+      transition: transform .18s ease;
+    }
+
+    .target.up {
+      transform: translateY(0) scale(1);
+    }
+
+    .target-body {
+      position: absolute;
+      inset: 0;
+      border-radius: 40px 40px 36px 36px;
+      background: linear-gradient(180deg, rgba(83,216,255,.95), rgba(75,123,255,.92) 52%, rgba(160,91,255,.95));
+      box-shadow: 0 18px 60px rgba(83,216,255,.22), 0 0 35px rgba(160,91,255,.2);
+      border: 1px solid rgba(255,255,255,.24);
+    }
+
+    .target-body::before,
+    .target-body::after {
+      content: "";
+      position: absolute;
+      top: 42px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 0 20px rgba(255,255,255,.45);
+    }
+
+    .target-body::before { left: 42px; }
+    .target-body::after { right: 42px; }
+
+    .target-mouth {
+      position: absolute;
+      left: 50%;
+      top: 82px;
+      width: 54px;
+      height: 18px;
+      transform: translateX(-50%);
+      border-radius: 0 0 24px 24px;
+      background: rgba(8,12,22,.65);
+      box-shadow: inset 0 3px 4px rgba(255,255,255,.08);
+    }
+
+    .target-hit {
+      position: absolute;
+      inset: -6px;
+      border-radius: 44px;
+      border: 2px solid rgba(255,255,255,.5);
+      opacity: 0;
+      transform: scale(.9);
+    }
+
+    .target.hit .target-hit {
+      animation: burst .32s ease;
+    }
+
+    @keyframes burst {
+      0% { opacity: 0; transform: scale(.9); }
+      30% { opacity: 1; }
+      100% { opacity: 0; transform: scale(1.2); }
+    }
+
+    .hammer-wrap {
+      position: absolute;
+      top: 30px;
+      right: min(80px, 8%);
+      width: 180px;
+      height: 180px;
+      pointer-events: none;
+      transform-origin: 80% 15%;
+      transition: transform .08s ease;
+      filter: drop-shadow(0 12px 24px rgba(0,0,0,.3));
+    }
+
+    .hammer-wrap.swing {
+      transform: rotate(-48deg) translate(-14px, 18px);
+    }
+
+    .hammer-head {
+      position: absolute;
+      top: 0;
+      left: 18px;
+      width: 102px;
+      height: 50px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #dde6f2, #8aa2c3);
+      box-shadow: inset 0 -8px 18px rgba(0,0,0,.18), inset 0 5px 9px rgba(255,255,255,.55);
+    }
+
+    .hammer-head::before,
+    .hammer-head::after {
+      content: "";
+      position: absolute;
+      top: 6px;
+      width: 16px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #edf3ff, #8aa2c3);
+    }
+
+    .hammer-head::before { left: -8px; }
+    .hammer-head::after { right: -8px; }
+
+    .hammer-handle {
+      position: absolute;
+      top: 32px;
+      left: 86px;
+      width: 22px;
+      height: 132px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #85562b, #4e3117);
+      transform: rotate(28deg);
+      box-shadow: inset 0 2px 5px rgba(255,255,255,.1);
+    }
+
+    .controls {
+      padding: 0 18px 18px;
+    }
+
+    .meter-card {
+      padding: 18px;
+      border-radius: 24px;
+      border: 1px solid rgba(113,188,255,.14);
+      background: linear-gradient(180deg, rgba(15,24,45,.9), rgba(9,14,27,.88));
+    }
+
+    .meter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .meter-header strong {
+      font-size: 18px;
+    }
+
+    .meter {
+      position: relative;
+      height: 34px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      box-shadow: inset 0 8px 18px rgba(0,0,0,.28);
+    }
+
+    .meter-zones {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 18% 26% 28% 18% 10%;
+    }
+
+    .zone-red { background: linear-gradient(180deg, rgba(255,107,129,.85), rgba(211,60,86,.9)); }
+    .zone-yellow { background: linear-gradient(180deg, rgba(255,202,87,.85), rgba(228,170,35,.9)); }
+    .zone-green { background: linear-gradient(180deg, rgba(49,214,139,.85), rgba(17,167,99,.9)); }
+    .zone-green2 { background: linear-gradient(180deg, rgba(49,214,139,.96), rgba(14,178,102,.98)); }
+    .zone-gold { background: linear-gradient(180deg, rgba(255,235,126,.96), rgba(255,189,51,.96)); }
+
+    .meter-marker {
+      position: absolute;
+      top: 2px;
+      bottom: 2px;
+      width: 16px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(225,240,255,.88));
+      box-shadow: 0 0 0 3px rgba(83,216,255,.12), 0 0 20px rgba(255,255,255,.35);
+      transform: translateX(-50%);
+      left: 10%;
+    }
+
+    .zone-legend {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .legend-item {
+      padding: 10px 8px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.06);
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .legend-item strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .action-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .result-box {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1.3fr .7fr;
+      gap: 12px;
+    }
+
+    .result-panel,
+    .feed-panel {
+      padding: 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(113,188,255,.14);
+      background: rgba(255,255,255,.025);
+      min-height: 132px;
+    }
+
+    .result-status {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+
+    .result-status.win { color: #9dffd0; }
+    .result-status.lose { color: #ff9fb0; }
+    .result-status.idle { color: var(--text); }
+
+    .result-meta {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 240px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .feed-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.04);
+      font-size: 13px;
+    }
+
+    .feed-item span:last-child {
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .feed-plus { color: #9dffd0; }
+    .feed-minus { color: #ff9fb0; }
+
+    .footer-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .flash {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.16), transparent 30%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .flash.show { animation: flash .2s ease; }
+
+    @keyframes flash {
+      0% { opacity: 0; }
+      40% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    .floating {
+      position: absolute;
+      left: 50%;
+      top: 38%;
+      transform: translate(-50%, -50%);
+      font-weight: 800;
+      font-size: 34px;
+      opacity: 0;
+      pointer-events: none;
+      text-shadow: 0 10px 30px rgba(0,0,0,.4);
+    }
+
+    .floating.show.plus,
+    .floating.show.minus {
+      animation: floatup .9s ease forwards;
+    }
+
+    .floating.plus { color: #9dffd0; }
+    .floating.minus { color: #ff9fb0; }
+
+    @keyframes floatup {
+      0% { opacity: 0; transform: translate(-50%, -20px) scale(.8); }
+      15% { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%, -100px) scale(1.06); }
+    }
+
+    @media (max-width: 1024px) {
+      .grid { grid-template-columns: 1fr; }
+      .side { position: static; }
+      .topbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero { flex-direction: column; align-items: stretch; }
+    }
+
+    @media (max-width: 700px) {
+      .container { width: min(100% - 16px, 100%); margin: 12px auto 20px; }
+      .hero, .game, .side { padding: 14px; border-radius: 22px; }
+      .deposit-options { grid-template-columns: 1fr; }
+      .custom-deposit { flex-direction: column; }
+      .topbar { grid-template-columns: 1fr; }
+      .arena { min-height: 560px; border-radius: 24px; }
+      .stage { height: 320px; padding-top: 24px; }
+      .target-zone { width: 100%; }
+      .target-hole { width: 200px; height: 58px; }
+      .target-ring { width: 236px; height: 84px; }
+      .target { width: 126px; height: 126px; bottom: 48px; }
+      .hammer-wrap { right: 18px; top: 10px; transform: scale(.82); transform-origin: top right; }
+      .zone-legend { grid-template-columns: repeat(2, 1fr); }
+      .result-box { grid-template-columns: 1fr; }
+      .floating { font-size: 28px; top: 34%; }
+      .hero h1 { line-height: 1.05; }
+    }
+  </style>
 </head>
 <body>
+  <div class="stars"></div>
 
-<div id="menu">
-<h1>AXION CRAFT</h1>
-<button id="start">START</button>
-</div>
+  <div class="container">
+    <section class="hero">
+      <div>
+        <div class="brand">
+          <div class="logo"><span>AX</span></div>
+          <div>
+            <h1>AXION HAMMER DEMO</h1>
+            <p>Load demo AX, wait for the target, and strike inside the best timing zone to earn more. Miss the timing and your in-game AX balance drops. This version is demo-only and does not use real token transfers.</p>
+          </div>
+        </div>
+      </div>
+      <div class="hero-badge">Demo Mode • No Real AX Transfer</div>
+    </section>
 
-<div id="hud">
-<div id="crosshair"></div>
+    <section class="grid">
+      <aside class="panel side">
+        <div class="panel-title">
+          <h2>Game Wallet</h2>
+          <span class="muted">In-game only</span>
+        </div>
 
-<div id="info" class="panel">
-Blocks: <span id="blocks">0</span><br>
-Enemies: <span id="enemy">0</span>
-</div>
+        <div class="cards">
+          <div class="stat-card">
+            <div class="label">Demo AX Balance</div>
+            <div class="value" id="walletBalance">0 AX</div>
+            <div class="subvalue">Load your balance below to start smashing.</div>
+          </div>
 
-<div id="inventory" class="panel">
-Wood: <span id="wood">0</span><br>
-Stone: <span id="stone">0</span><br>
-Crystal: <span id="crystal">0</span>
-</div>
-</div>
+          <div class="stat-card">
+            <div class="label">Current Combo</div>
+            <div class="value" id="comboValue">x0</div>
+            <div class="subvalue">Consecutive winning hits increase bonus rewards.</div>
+          </div>
+        </div>
 
-<script type="module">
-import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
-import { PointerLockControls } from "https://unpkg.com/three@0.160.0/examples/jsm/controls/PointerLockControls.js";
+        <div class="deposit-box">
+          <div class="panel-title" style="margin-bottom: 8px;">
+            <h3>Load Demo AX</h3>
+            <span class="muted">Fast start</span>
+          </div>
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000);
-camera.position.set(0,3,5);
+          <div class="deposit-options">
+            <button class="pill" data-amount="100">100 AX</button>
+            <button class="pill" data-amount="500">500 AX</button>
+            <button class="pill" data-amount="1000">1000 AX</button>
+          </div>
 
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(innerWidth,innerHeight);
-document.body.appendChild(renderer.domElement);
+          <button class="btn btn-primary full" id="loadSelectedBtn">Load Selected</button>
 
-const controls = new PointerLockControls(camera,document.body);
-scene.add(controls.getObject());
+          <div class="custom-deposit">
+            <input type="number" id="customAmount" min="1" step="1" placeholder="Custom AX amount" />
+            <button class="btn btn-secondary" id="loadCustomBtn">Load</button>
+          </div>
+        </div>
 
-document.getElementById("start").onclick=()=>controls.lock();
-controls.addEventListener("lock",()=>{
-menu.style.display="none";
-hud.style.display="block";
-});
+        <div class="rules">
+          <div class="panel-title" style="margin: 0 0 4px;">
+            <h3>Reward Rules</h3>
+          </div>
+          <ul>
+            <li>Red zone: <strong>-12 AX</strong></li>
+            <li>Yellow zone: <strong>+4 AX</strong></li>
+            <li>Green zone: <strong>+10 AX</strong></li>
+            <li>Bright green zone: <strong>+18 AX</strong></li>
+            <li>Gold zone: <strong>+32 AX</strong></li>
+            <li>Miss or empty strike: <strong>-15 AX</strong></li>
+          </ul>
+        </div>
+      </aside>
 
-const light=new THREE.HemisphereLight(0xffffff,0x444444,1.2);
-scene.add(light);
+      <main class="panel game">
+        <div class="topbar">
+          <div class="mini-card">
+            <div class="k">Round</div>
+            <div class="v" id="roundValue">0</div>
+          </div>
+          <div class="mini-card">
+            <div class="k">Best Combo</div>
+            <div class="v" id="bestComboValue">0</div>
+          </div>
+          <div class="mini-card">
+            <div class="k">Wins</div>
+            <div class="v" id="winsValue">0</div>
+          </div>
+          <div class="mini-card">
+            <div class="k">Losses</div>
+            <div class="v" id="lossesValue">0</div>
+          </div>
+        </div>
 
-const boxGeo=new THREE.BoxGeometry(1,1,1);
-const world=new Map();
+        <div class="arena" id="arena">
+          <div class="flash" id="flash"></div>
+          <div class="floating" id="floatingText">+10 AX</div>
 
-function add(x,y,z,color){
-const mesh=new THREE.Mesh(boxGeo,new THREE.MeshStandardMaterial({color}));
-mesh.position.set(x,y,z);
-scene.add(mesh);
-world.set(`${x},${y},${z}`,mesh);
-}
+          <div class="stage">
+            <div class="target-zone">
+              <div class="target-ring"></div>
+              <div class="target-hole"></div>
 
-for(let x=-10;x<10;x++){
-for(let z=-10;z<10;z++){
-add(x,0,z,0x228B22);
-if(Math.random()<0.1) add(x,1,z,0x888888);
-if(Math.random()<0.05) add(x,1,z,0x00ffff);
-}
-}
+              <div class="target" id="target">
+                <div class="target-body"></div>
+                <div class="target-mouth"></div>
+                <div class="target-hit"></div>
+              </div>
+            </div>
 
-let inv={wood:0,stone:0,crystal:0};
+            <div class="hammer-wrap" id="hammer">
+              <div class="hammer-head"></div>
+              <div class="hammer-handle"></div>
+            </div>
+          </div>
 
-const ray=new THREE.Raycaster();
-window.addEventListener("click",()=>{
-ray.setFromCamera({x:0,y:0},camera);
-const hit=ray.intersectObjects([...world.values()])[0];
-if(!hit) return;
+          <div class="controls">
+            <div class="meter-card">
+              <div class="meter-header">
+                <div>
+                  <strong>Power Timing Meter</strong>
+                  <div class="muted">Press <strong>Hammer Strike</strong> while the target is visible.</div>
+                </div>
+                <div class="muted" id="meterState">Idle</div>
+              </div>
 
-const p=hit.object.position;
-scene.remove(hit.object);
-world.delete(`${p.x},${p.y},${p.z}`);
+              <div class="meter" aria-label="timing meter">
+                <div class="meter-zones">
+                  <div class="zone-red"></div>
+                  <div class="zone-yellow"></div>
+                  <div class="zone-green"></div>
+                  <div class="zone-green2"></div>
+                  <div class="zone-gold"></div>
+                </div>
+                <div class="meter-marker" id="meterMarker"></div>
+              </div>
 
-if(hit.object.material.color.getHex()==0x888888) inv.stone++;
-if(hit.object.material.color.getHex()==0x00ffff) inv.crystal++;
+              <div class="zone-legend">
+                <div class="legend-item">Red<strong>-12 AX</strong></div>
+                <div class="legend-item">Yellow<strong>+4 AX</strong></div>
+                <div class="legend-item">Green<strong>+10 AX</strong></div>
+                <div class="legend-item">Boost<strong>+18 AX</strong></div>
+                <div class="legend-item">Gold<strong>+32 AX</strong></div>
+              </div>
 
-updateUI();
-});
+              <div class="action-row">
+                <button class="btn btn-primary" id="startBtn">Start Round</button>
+                <button class="btn btn-secondary" id="hitBtn" disabled>Hammer Strike</button>
+                <button class="btn btn-dark" id="resetBtn">Reset Demo</button>
+              </div>
 
-function updateUI(){
-blocks.innerText=world.size;
-stone.innerText=inv.stone;
-crystal.innerText=inv.crystal;
-}
+              <div class="result-box">
+                <div class="result-panel">
+                  <div class="result-status idle" id="resultStatus">Waiting for demo AX load</div>
+                  <div class="result-meta" id="resultText">Load balance, start a round, then strike when the target pops up. Better timing means bigger AX rewards.</div>
+                </div>
+                <div class="feed-panel">
+                  <div class="panel-title" style="margin-bottom: 10px;">
+                    <h3>Recent Rounds</h3>
+                    <span class="muted">Live log</span>
+                  </div>
+                  <div class="feed-list" id="feedList"></div>
+                </div>
+              </div>
+            </div>
+            <div class="footer-note">AXION Hammer Demo • Visual prototype for gameplay flow only.</div>
+          </div>
+        </div>
+      </main>
+    </section>
+  </div>
 
-let keys={};
-onkeydown=e=>keys[e.code]=true;
-onkeyup=e=>keys[e.code]=false;
+  <script>
+    const state = {
+      balance: 0,
+      round: 0,
+      wins: 0,
+      losses: 0,
+      combo: 0,
+      bestCombo: 0,
+      selectedAmount: 100,
+      markerPos: 10,
+      markerDir: 1,
+      meterRunning: false,
+      targetVisible: false,
+      roundActive: false,
+      resolved: false,
+      meterFrame: null,
+      targetDownTimeout: null,
+      nextRoundTimeout: null
+    };
 
-function animate(){
-requestAnimationFrame(animate);
+    const walletBalance = document.getElementById('walletBalance');
+    const comboValue = document.getElementById('comboValue');
+    const bestComboValue = document.getElementById('bestComboValue');
+    const winsValue = document.getElementById('winsValue');
+    const lossesValue = document.getElementById('lossesValue');
+    const roundValue = document.getElementById('roundValue');
+    const resultStatus = document.getElementById('resultStatus');
+    const resultText = document.getElementById('resultText');
+    const meterMarker = document.getElementById('meterMarker');
+    const meterState = document.getElementById('meterState');
+    const target = document.getElementById('target');
+    const hammer = document.getElementById('hammer');
+    const feedList = document.getElementById('feedList');
+    const flash = document.getElementById('flash');
+    const floatingText = document.getElementById('floatingText');
+    const startBtn = document.getElementById('startBtn');
+    const hitBtn = document.getElementById('hitBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const customAmount = document.getElementById('customAmount');
+    const loadSelectedBtn = document.getElementById('loadSelectedBtn');
+    const loadCustomBtn = document.getElementById('loadCustomBtn');
+    const pills = [...document.querySelectorAll('.pill')];
 
-if(keys["KeyW"]) controls.moveForward(0.1);
-if(keys["KeyS"]) controls.moveForward(-0.1);
-if(keys["KeyA"]) controls.moveRight(-0.1);
-if(keys["KeyD"]) controls.moveRight(0.1);
+    function updateUI() {
+      walletBalance.textContent = `${Math.max(0, Math.floor(state.balance))} AX`;
+      comboValue.textContent = `x${state.combo}`;
+      bestComboValue.textContent = state.bestCombo;
+      winsValue.textContent = state.wins;
+      lossesValue.textContent = state.losses;
+      roundValue.textContent = state.round;
+      startBtn.disabled = state.roundActive || state.balance <= 0;
+      hitBtn.disabled = !state.roundActive;
+    }
 
-renderer.render(scene,camera);
-}
-animate();
-</script>
+    function setMessage(status, text, mode = 'idle') {
+      resultStatus.textContent = status;
+      resultStatus.className = `result-status ${mode}`;
+      resultText.textContent = text;
+    }
 
+    function addFeed(text, delta) {
+      const item = document.createElement('div');
+      item.className = 'feed-item';
+      const deltaClass = delta >= 0 ? 'feed-plus' : 'feed-minus';
+      const sign = delta >= 0 ? '+' : '';
+      item.innerHTML = `<span>${text}</span><span class="${deltaClass}">${sign}${delta} AX</span>`;
+      feedList.prepend(item);
+      while (feedList.children.length > 8) {
+        feedList.removeChild(feedList.lastChild);
+      }
+    }
+
+    function showFloating(delta) {
+      floatingText.textContent = `${delta >= 0 ? '+' : ''}${delta} AX`;
+      floatingText.className = `floating show ${delta >= 0 ? 'plus' : 'minus'}`;
+      setTimeout(() => {
+        floatingText.className = `floating ${delta >= 0 ? 'plus' : 'minus'}`;
+      }, 900);
+    }
+
+    function flashArena() {
+      flash.classList.remove('show');
+      void flash.offsetWidth;
+      flash.classList.add('show');
+    }
+
+    function swingHammer() {
+      hammer.classList.remove('swing');
+      void hammer.offsetWidth;
+      hammer.classList.add('swing');
+      setTimeout(() => hammer.classList.remove('swing'), 120);
+    }
+
+    function hitTargetEffect() {
+      target.classList.remove('hit');
+      void target.offsetWidth;
+      target.classList.add('hit');
+      setTimeout(() => target.classList.remove('hit'), 260);
+    }
+
+    function setTargetVisible(visible) {
+      state.targetVisible = visible;
+      target.classList.toggle('up', visible);
+    }
+
+    function stopMeter() {
+      state.meterRunning = false;
+      if (state.meterFrame) cancelAnimationFrame(state.meterFrame);
+      state.meterFrame = null;
+    }
+
+    function animateMeter() {
+      if (!state.meterRunning) return;
+      state.markerPos += state.markerDir * 1.35;
+      if (state.markerPos >= 99) {
+        state.markerPos = 99;
+        state.markerDir = -1;
+      }
+      if (state.markerPos <= 1) {
+        state.markerPos = 1;
+        state.markerDir = 1;
+      }
+      meterMarker.style.left = `${state.markerPos}%`;
+      state.meterFrame = requestAnimationFrame(animateMeter);
+    }
+
+    function getZoneOutcome(pos) {
+      if (pos < 18) return { label: 'Red Zone', delta: -12, win: false };
+      if (pos < 44) return { label: 'Yellow Zone', delta: 4, win: true };
+      if (pos < 72) return { label: 'Green Zone', delta: 10, win: true };
+      if (pos < 90) return { label: 'Boost Zone', delta: 18, win: true };
+      return { label: 'Gold Zone', delta: 32, win: true };
+    }
+
+    function resolveRound(delta, zoneLabel, reason, win) {
+      if (state.resolved) return;
+      state.resolved = true;
+      state.roundActive = false;
+      stopMeter();
+      clearTimeout(state.targetDownTimeout);
+      setTargetVisible(false);
+      state.balance += delta;
+      if (state.balance < 0) state.balance = 0;
+
+      if (win) {
+        state.wins += 1;
+        state.combo += 1;
+        state.bestCombo = Math.max(state.bestCombo, state.combo);
+        const comboBonus = state.combo >= 3 ? 2 * Math.min(state.combo, 5) : 0;
+        if (comboBonus > 0) {
+          state.balance += comboBonus;
+          delta += comboBonus;
+          reason += ` Combo bonus +${comboBonus} AX.`;
+        }
+        setMessage(`${zoneLabel}!`, `${reason} Your timing paid off.`, 'win');
+      } else {
+        state.losses += 1;
+        state.combo = 0;
+        setMessage(`${zoneLabel}`, `${reason} Bad timing cost you AX.`, 'lose');
+      }
+
+      swingHammer();
+      flashArena();
+      if (win) hitTargetEffect();
+      showFloating(delta);
+      addFeed(`Round ${state.round}: ${zoneLabel}`, delta);
+      meterState.textContent = 'Round complete';
+      updateUI();
+    }
+
+    function startRound() {
+      if (state.balance <= 0 || state.roundActive) return;
+      state.round += 1;
+      state.roundActive = true;
+      state.resolved = false;
+      meterState.textContent = 'Charging';
+      state.markerPos = 10 + Math.random() * 20;
+      state.markerDir = Math.random() > 0.5 ? 1 : -1;
+      meterMarker.style.left = `${state.markerPos}%`;
+      setTargetVisible(false);
+      updateUI();
+      setMessage('Round started', 'Wait for the target to emerge, then strike while watching the timing meter.', 'idle');
+
+      const appearDelay = 600 + Math.random() * 900;
+      const visibleDuration = 1100 + Math.random() * 700;
+
+      state.meterRunning = true;
+      animateMeter();
+
+      setTimeout(() => {
+        if (!state.roundActive || state.resolved) return;
+        setTargetVisible(true);
+        meterState.textContent = 'Target visible';
+        state.targetDownTimeout = setTimeout(() => {
+          if (!state.resolved) {
+            resolveRound(-15, 'Missed Target', 'You failed to strike before the target disappeared.', false);
+          }
+        }, visibleDuration);
+      }, appearDelay);
+    }
+
+    function strike() {
+      if (!state.roundActive || state.resolved) return;
+      swingHammer();
+      if (!state.targetVisible) {
+        resolveRound(-15, 'Empty Swing', 'You struck before the target appeared.', false);
+        return;
+      }
+
+      const outcome = getZoneOutcome(state.markerPos);
+      resolveRound(outcome.delta, outcome.label, `Meter stopped at ${state.markerPos.toFixed(0)}%.`, outcome.win);
+    }
+
+    function resetDemo() {
+      stopMeter();
+      clearTimeout(state.targetDownTimeout);
+      clearTimeout(state.nextRoundTimeout);
+      state.balance = 0;
+      state.round = 0;
+      state.wins = 0;
+      state.losses = 0;
+      state.combo = 0;
+      state.bestCombo = 0;
+      state.markerPos = 10;
+      state.markerDir = 1;
+      state.meterRunning = false;
+      state.targetVisible = false;
+      state.roundActive = false;
+      state.resolved = false;
+      meterMarker.style.left = '10%';
+      meterState.textContent = 'Idle';
+      setTargetVisible(false);
+      feedList.innerHTML = '';
+      setMessage('Waiting for demo AX load', 'Load balance, start a round, then strike when the target pops up. Better timing means bigger AX rewards.', 'idle');
+      updateUI();
+    }
+
+    function loadAX(amount) {
+      const value = Number(amount);
+      if (!Number.isFinite(value) || value <= 0) return;
+      state.balance += Math.floor(value);
+      setMessage('Demo AX loaded', `${Math.floor(value)} AX added to your in-game balance. You can now start smashing.`, 'win');
+      addFeed('Demo AX loaded', Math.floor(value));
+      updateUI();
+    }
+
+    pills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        pills.forEach((p) => p.classList.remove('active'));
+        pill.classList.add('active');
+        state.selectedAmount = Number(pill.dataset.amount);
+      });
+    });
+    pills[0].classList.add('active');
+
+    loadSelectedBtn.addEventListener('click', () => loadAX(state.selectedAmount));
+    loadCustomBtn.addEventListener('click', () => loadAX(customAmount.value));
+    customAmount.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') loadAX(customAmount.value);
+    });
+    startBtn.addEventListener('click', startRound);
+    hitBtn.addEventListener('click', strike);
+    resetBtn.addEventListener('click', resetDemo);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (state.roundActive) strike();
+      }
+      if (e.key.toLowerCase() === 's') {
+        if (!state.roundActive && state.balance > 0) startRound();
+      }
+    });
+
+    resetDemo();
+  </script>
 </body>
 </html>
