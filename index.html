@@ -3,39 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AXION Hammer Demo</title>
+  <title>AXION Hammer Demo V2</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#050816;
-      --bg2:#0a1330;
-      --panel:rgba(9,16,34,.78);
-      --panel-2:rgba(14,22,44,.86);
-      --border:rgba(91,177,255,.20);
-      --text:#ebf5ff;
-      --muted:#8fa7c4;
+      --bg:#040714;
+      --bg2:#09132f;
+      --panel:rgba(10,16,34,.78);
+      --panel-2:rgba(14,22,44,.9);
+      --border:rgba(95,180,255,.18);
+      --text:#eef6ff;
+      --muted:#8ca4c4;
       --cyan:#53d8ff;
       --blue:#4a7dff;
       --violet:#a35cff;
-      --green:#33d98d;
-      --yellow:#ffc95e;
+      --green:#34da8f;
+      --yellow:#ffca5e;
       --red:#ff6f88;
-      --shadow:0 18px 55px rgba(0,0,0,.42);
+      --shadow:0 18px 60px rgba(0,0,0,.42);
     }
 
     *{box-sizing:border-box}
     html,body{
       margin:0;
       padding:0;
-      font-family:'Inter',sans-serif;
-      background:
-        radial-gradient(circle at 20% 0%, rgba(83,216,255,.10), transparent 30%),
-        radial-gradient(circle at 85% 10%, rgba(163,92,255,.14), transparent 28%),
-        linear-gradient(180deg,var(--bg2),var(--bg));
-      color:var(--text);
       min-height:100%;
+      font-family:'Inter',sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(83,216,255,.10), transparent 28%),
+        radial-gradient(circle at 85% 10%, rgba(163,92,255,.15), transparent 28%),
+        linear-gradient(180deg,var(--bg2),var(--bg));
     }
 
     body{
@@ -44,39 +44,37 @@
       position:relative;
     }
 
-    .stars,
-    .stars::before,
-    .stars::after{
+    .stars,.stars::before,.stars::after{
       content:"";
       position:fixed;
       inset:0;
       pointer-events:none;
       background-image:
-        radial-gradient(2px 2px at 18% 20%, rgba(255,255,255,.55), transparent 65%),
-        radial-gradient(1px 1px at 72% 28%, rgba(255,255,255,.45), transparent 65%),
-        radial-gradient(2px 2px at 84% 72%, rgba(83,216,255,.45), transparent 65%),
-        radial-gradient(1px 1px at 38% 80%, rgba(255,255,255,.40), transparent 65%),
-        radial-gradient(2px 2px at 60% 55%, rgba(163,92,255,.35), transparent 65%),
-        radial-gradient(1px 1px at 10% 92%, rgba(255,255,255,.35), transparent 65%);
+        radial-gradient(2px 2px at 18% 22%, rgba(255,255,255,.6), transparent 70%),
+        radial-gradient(1px 1px at 74% 28%, rgba(255,255,255,.45), transparent 70%),
+        radial-gradient(2px 2px at 84% 72%, rgba(83,216,255,.45), transparent 70%),
+        radial-gradient(1px 1px at 40% 82%, rgba(255,255,255,.35), transparent 70%),
+        radial-gradient(2px 2px at 58% 56%, rgba(163,92,255,.35), transparent 70%),
+        radial-gradient(1px 1px at 10% 92%, rgba(255,255,255,.28), transparent 70%);
     }
     .stars::before{transform:scale(1.2);opacity:.45}
-    .stars::after{transform:scale(1.5);opacity:.20}
+    .stars::after{transform:scale(1.5);opacity:.2}
 
     .container{
-      width:min(1180px, calc(100% - 28px));
-      margin:24px auto;
+      width:min(1220px, calc(100% - 26px));
+      margin:20px auto;
       position:relative;
       z-index:2;
     }
 
     .hero{
       display:flex;
+      align-items:flex-start;
       justify-content:space-between;
       gap:18px;
-      align-items:flex-start;
       padding:22px;
       border-radius:28px;
-      background:linear-gradient(180deg, rgba(15,24,46,.95), rgba(8,13,26,.82));
+      background:linear-gradient(180deg, rgba(15,24,46,.96), rgba(8,13,26,.85));
       border:1px solid var(--border);
       box-shadow:var(--shadow);
       backdrop-filter:blur(12px);
@@ -90,10 +88,10 @@
       min-width:0;
     }
 
-    .logo-shell{
-      width:84px;
-      height:84px;
-      flex:0 0 84px;
+    .logo-box{
+      width:86px;
+      height:86px;
+      flex:0 0 86px;
       display:grid;
       place-items:center;
       border-radius:24px;
@@ -104,12 +102,12 @@
       box-shadow:0 0 30px rgba(83,216,255,.12);
     }
 
-    .logo-shell img{
+    .logo-box img{
       width:68px;
       height:68px;
       object-fit:contain;
-      filter:drop-shadow(0 0 18px rgba(83,216,255,.20));
       display:block;
+      filter:drop-shadow(0 0 18px rgba(83,216,255,.22));
     }
 
     .hero h1{
@@ -123,11 +121,11 @@
       margin:0;
       color:var(--muted);
       line-height:1.6;
-      max-width:760px;
       font-size:15px;
+      max-width:760px;
     }
 
-    .hero-badge{
+    .badge{
       white-space:nowrap;
       display:inline-flex;
       align-items:center;
@@ -141,7 +139,7 @@
       font-weight:800;
     }
 
-    .grid{
+    .layout{
       display:grid;
       grid-template-columns:360px minmax(0,1fr);
       gap:18px;
@@ -156,7 +154,7 @@
       backdrop-filter:blur(12px);
     }
 
-    .side{
+    .sidebar{
       padding:18px;
       position:sticky;
       top:18px;
@@ -164,8 +162,8 @@
 
     .title-row{
       display:flex;
-      align-items:center;
       justify-content:space-between;
+      align-items:center;
       gap:10px;
       margin-bottom:14px;
     }
@@ -228,7 +226,7 @@
       margin:14px 0 12px;
     }
 
-    .pill, .btn, input{
+    .pill,.btn,input{
       font-family:inherit;
     }
 
@@ -289,12 +287,12 @@
     .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
     .btn-primary{
-      background:linear-gradient(135deg, var(--cyan), var(--blue));
+      background:linear-gradient(135deg,var(--cyan),var(--blue));
       box-shadow:0 12px 28px rgba(74,125,255,.26);
     }
 
     .btn-secondary{
-      background:linear-gradient(135deg, var(--violet), var(--blue));
+      background:linear-gradient(135deg,var(--violet),var(--blue));
       box-shadow:0 12px 28px rgba(163,92,255,.22);
     }
 
@@ -321,13 +319,13 @@
       font-size:14px;
     }
 
-    .game{
+    .main{
       padding:18px;
     }
 
     .topbar{
       display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
+      grid-template-columns:repeat(6,minmax(0,1fr));
       gap:12px;
       margin-bottom:16px;
     }
@@ -354,13 +352,13 @@
 
     .arena{
       position:relative;
-      min-height:620px;
+      min-height:690px;
       overflow:hidden;
       border-radius:30px;
       border:1px solid rgba(113,188,255,.18);
       background:
         radial-gradient(circle at 50% -10%, rgba(83,216,255,.12), transparent 24%),
-        radial-gradient(circle at 50% 100%, rgba(51,217,141,.10), transparent 30%),
+        radial-gradient(circle at 50% 100%, rgba(52,218,143,.10), transparent 30%),
         linear-gradient(180deg, rgba(8,12,24,.98), rgba(10,14,26,.96));
     }
 
@@ -376,7 +374,7 @@
       pointer-events:none;
     }
 
-    .axion-mark{
+    .corner-logo{
       position:absolute;
       top:18px;
       left:18px;
@@ -388,10 +386,10 @@
       border:1px solid rgba(255,255,255,.06);
       box-shadow:0 0 20px rgba(83,216,255,.08);
       backdrop-filter:blur(8px);
-      z-index:3;
+      z-index:5;
     }
 
-    .axion-mark img{
+    .corner-logo img{
       width:100%;
       height:100%;
       object-fit:contain;
@@ -440,10 +438,11 @@
     .target{
       position:absolute;
       bottom:55px;
-      width:152px;
-      height:152px;
-      transform:translateY(100px) scale(.9);
-      transition:transform .18s ease;
+      width:154px;
+      height:154px;
+      transform:translateY(110px) scale(.9);
+      transition:transform .16s ease;
+      z-index:3;
     }
 
     .target.up{
@@ -453,7 +452,7 @@
     .target-core{
       position:absolute;
       inset:0;
-      border-radius:38px;
+      border-radius:40px;
       background:
         radial-gradient(circle at 50% 22%, rgba(255,255,255,.12), transparent 26%),
         linear-gradient(180deg, rgba(83,216,255,.96), rgba(74,125,255,.92) 50%, rgba(163,92,255,.96));
@@ -465,8 +464,8 @@
       position:absolute;
       left:50%;
       top:18px;
-      width:52px;
-      height:52px;
+      width:54px;
+      height:54px;
       transform:translateX(-50%);
       object-fit:contain;
       filter:drop-shadow(0 0 14px rgba(255,255,255,.18));
@@ -476,7 +475,7 @@
     .target-core::before,.target-core::after{
       content:"";
       position:absolute;
-      top:82px;
+      top:86px;
       width:14px;
       height:14px;
       border-radius:50%;
@@ -490,7 +489,7 @@
     .target-mouth{
       position:absolute;
       left:50%;
-      top:108px;
+      top:112px;
       width:52px;
       height:16px;
       transform:translateX(-50%);
@@ -500,9 +499,9 @@
 
     .target-hit{
       position:absolute;
-      inset:-6px;
-      border-radius:44px;
-      border:2px solid rgba(255,255,255,.50);
+      inset:-8px;
+      border-radius:46px;
+      border:2px solid rgba(255,255,255,.55);
       opacity:0;
       transform:scale(.9);
     }
@@ -514,7 +513,7 @@
     @keyframes burst{
       0%{opacity:0;transform:scale(.9)}
       30%{opacity:1}
-      100%{opacity:0;transform:scale(1.2)}
+      100%{opacity:0;transform:scale(1.22)}
     }
 
     .hammer-wrap{
@@ -525,8 +524,9 @@
       height:180px;
       pointer-events:none;
       transform-origin:80% 15%;
-      transition:transform .08s ease;
+      transition:transform .07s ease;
       filter:drop-shadow(0 12px 24px rgba(0,0,0,.30));
+      z-index:4;
     }
 
     .hammer-wrap.swing{
@@ -611,8 +611,8 @@
 
     .z-red{background:linear-gradient(180deg, rgba(255,111,136,.85), rgba(215,63,91,.90))}
     .z-yellow{background:linear-gradient(180deg, rgba(255,201,94,.88), rgba(226,166,31,.92))}
-    .z-green{background:linear-gradient(180deg, rgba(51,217,141,.86), rgba(16,169,100,.92))}
-    .z-green2{background:linear-gradient(180deg, rgba(51,217,141,.96), rgba(14,178,102,.98))}
+    .z-green{background:linear-gradient(180deg, rgba(52,218,143,.86), rgba(16,169,100,.92))}
+    .z-green2{background:linear-gradient(180deg, rgba(52,218,143,.96), rgba(14,178,102,.98))}
     .z-gold{background:linear-gradient(180deg, rgba(255,235,126,.96), rgba(255,188,45,.96))}
 
     .marker{
@@ -661,12 +661,12 @@
     .result-box{
       margin-top:16px;
       display:grid;
-      grid-template-columns:1.3fr .7fr;
+      grid-template-columns:1.2fr .8fr;
       gap:12px;
     }
 
     .result-panel,.feed-panel{
-      min-height:132px;
+      min-height:140px;
       padding:16px;
       border-radius:20px;
       border:1px solid rgba(113,188,255,.14);
@@ -694,7 +694,7 @@
       display:flex;
       flex-direction:column;
       gap:10px;
-      max-height:240px;
+      max-height:260px;
       overflow:auto;
       padding-right:2px;
     }
@@ -732,6 +732,7 @@
       background:radial-gradient(circle at 50% 50%, rgba(255,255,255,.16), transparent 30%);
       opacity:0;
       pointer-events:none;
+      z-index:2;
     }
 
     .flash.show{animation:flash .2s ease}
@@ -752,6 +753,7 @@
       opacity:0;
       pointer-events:none;
       text-shadow:0 10px 30px rgba(0,0,0,.4);
+      z-index:6;
     }
 
     .floating.show.plus,.floating.show.minus{
@@ -767,23 +769,111 @@
       100%{opacity:0;transform:translate(-50%,-100px) scale(1.06)}
     }
 
-    @media (max-width:1024px){
-      .grid{grid-template-columns:1fr}
-      .side{position:static}
-      .topbar{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .overlay{
+      position:absolute;
+      inset:0;
+      z-index:10;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background:linear-gradient(180deg, rgba(4,7,20,.55), rgba(4,7,20,.75));
+      backdrop-filter:blur(10px);
+      transition:opacity .25s ease, visibility .25s ease;
+    }
+
+    .overlay.hidden{
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+    }
+
+    .overlay-card{
+      width:min(560px, 100%);
+      padding:28px;
+      border-radius:30px;
+      border:1px solid rgba(113,188,255,.18);
+      background:linear-gradient(180deg, rgba(15,24,46,.96), rgba(8,13,26,.90));
+      box-shadow:0 18px 60px rgba(0,0,0,.42);
+      text-align:center;
+    }
+
+    .overlay-logo{
+      width:82px;
+      height:82px;
+      object-fit:contain;
+      display:block;
+      margin:0 auto 16px;
+      filter:drop-shadow(0 0 20px rgba(83,216,255,.22));
+    }
+
+    .overlay h2{
+      margin:0 0 10px;
+      font-size:34px;
+      letter-spacing:-.04em;
+    }
+
+    .overlay p{
+      margin:0 auto 18px;
+      max-width:440px;
+      color:var(--muted);
+      line-height:1.7;
+      font-size:15px;
+    }
+
+    .overlay-stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin:0 0 18px;
+    }
+
+    .overlay-stat{
+      padding:14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .overlay-stat .k{
+      color:var(--muted);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+    }
+
+    .overlay-stat .v{
+      margin-top:8px;
+      font-size:22px;
+      font-weight:900;
+    }
+
+    .pulse{
+      animation:pulse 1.8s infinite;
+    }
+
+    @keyframes pulse{
+      0%,100%{box-shadow:0 12px 28px rgba(74,125,255,.20)}
+      50%{box-shadow:0 12px 36px rgba(83,216,255,.26)}
+    }
+
+    @media (max-width:1100px){
+      .layout{grid-template-columns:1fr}
+      .sidebar{position:static}
+      .topbar{grid-template-columns:repeat(3,minmax(0,1fr))}
       .hero{flex-direction:column}
     }
 
     @media (max-width:700px){
-      .container{width:min(100% - 16px, 100%);margin:12px auto 20px}
-      .hero,.game,.side{padding:14px;border-radius:22px}
+      .container{width:min(100% - 14px,100%);margin:10px auto 20px}
+      .hero,.main,.sidebar{padding:14px;border-radius:22px}
       .hero-left{align-items:flex-start}
-      .logo-shell{width:72px;height:72px;flex-basis:72px}
-      .logo-shell img{width:58px;height:58px}
+      .logo-box{width:72px;height:72px;flex-basis:72px}
+      .logo-box img{width:58px;height:58px}
       .amount-grid{grid-template-columns:1fr}
       .custom-row{flex-direction:column}
-      .topbar{grid-template-columns:1fr}
-      .arena{min-height:560px;border-radius:24px}
+      .topbar{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .arena{min-height:650px;border-radius:24px}
       .stage{height:320px;padding-top:24px}
       .target-zone{width:100%}
       .target-hole{width:200px;height:58px}
@@ -794,7 +884,9 @@
       .legend{grid-template-columns:repeat(2,1fr)}
       .result-box{grid-template-columns:1fr}
       .floating{font-size:28px;top:34%}
-      .axion-mark{width:54px;height:54px;top:12px;left:12px}
+      .corner-logo{width:54px;height:54px;top:12px;left:12px}
+      .overlay-stats{grid-template-columns:1fr}
+      .overlay h2{font-size:28px}
     }
   </style>
 </head>
@@ -804,19 +896,19 @@
   <div class="container">
     <section class="hero">
       <div class="hero-left">
-        <div class="logo-shell">
+        <div class="logo-box">
           <img src="https://raw.githubusercontent.com/axionteam645/axion-dashboard/main/axion-logo.png" alt="AXION Logo">
         </div>
         <div>
-          <h1>AXION HAMMER DEMO</h1>
-          <p>Load demo AX, wait for the target, and strike inside the best timing zone to earn more. Miss the timing and your in-game AX balance drops. This version is demo-only and does not use real token transfers.</p>
+          <h1>AXION HAMMER DEMO V2</h1>
+          <p>Load demo AX, start the session, and hit the AXION target at the right moment. Better timing means more AX, higher combo, and faster level progression. This is a demo gameplay prototype with no real token transfer.</p>
         </div>
       </div>
-      <div class="hero-badge">Demo Mode • No Real AX Transfer</div>
+      <div class="badge">Demo Mode • No Real AX Transfer</div>
     </section>
 
-    <section class="grid">
-      <aside class="panel side">
+    <section class="layout">
+      <aside class="panel sidebar">
         <div class="title-row">
           <h2>Game Wallet</h2>
           <span class="muted">In-game only</span>
@@ -826,20 +918,26 @@
           <div class="card">
             <div class="label">Demo AX Balance</div>
             <div class="big" id="walletBalance">0 AX</div>
-            <div class="sub">Load your balance below to start smashing.</div>
+            <div class="sub">Load demo AX below to unlock the game session.</div>
           </div>
 
           <div class="card">
             <div class="label">Current Combo</div>
             <div class="big" id="comboValue">x0</div>
-            <div class="sub">Consecutive winning hits increase bonus rewards.</div>
+            <div class="sub">Every winning hit increases combo. Big combos boost rewards.</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Best Score</div>
+            <div class="big" id="bestScoreValue">0</div>
+            <div class="sub">Your highest score is saved during this page session.</div>
           </div>
         </div>
 
         <div class="load-box">
           <div class="title-row" style="margin-bottom:8px;">
             <h3>Load Demo AX</h3>
-            <span class="muted">Fast start</span>
+            <span class="muted">Quick start</span>
           </div>
 
           <div class="amount-grid">
@@ -864,408 +962,21 @@
             <li>Red zone: <strong>-12 AX</strong></li>
             <li>Yellow zone: <strong>+4 AX</strong></li>
             <li>Green zone: <strong>+10 AX</strong></li>
-            <li>Bright green zone: <strong>+18 AX</strong></li>
+            <li>Boost zone: <strong>+18 AX</strong></li>
             <li>Gold zone: <strong>+32 AX</strong></li>
             <li>Miss or empty strike: <strong>-15 AX</strong></li>
+            <li>Combo 3+: extra combo bonus starts</li>
+            <li>Every 120 score: level up</li>
           </ul>
         </div>
       </aside>
 
-      <main class="panel game">
+      <main class="panel main">
         <div class="topbar">
           <div class="mini">
-            <div class="k">Round</div>
-            <div class="v" id="roundValue">0</div>
+            <div class="k">Timer</div>
+            <div class="v" id="timerValue">30s</div>
           </div>
           <div class="mini">
-            <div class="k">Best Combo</div>
-            <div class="v" id="bestComboValue">0</div>
-          </div>
-          <div class="mini">
-            <div class="k">Wins</div>
-            <div class="v" id="winsValue">0</div>
-          </div>
-          <div class="mini">
-            <div class="k">Losses</div>
-            <div class="v" id="lossesValue">0</div>
-          </div>
-        </div>
-
-        <div class="arena" id="arena">
-          <div class="axion-mark">
-            <img src="https://raw.githubusercontent.com/axionteam645/axion-dashboard/main/axion-logo.png" alt="AXION Logo">
-          </div>
-
-          <div class="flash" id="flash"></div>
-          <div class="floating" id="floatingText">+10 AX</div>
-
-          <div class="stage">
-            <div class="target-zone">
-              <div class="target-ring"></div>
-              <div class="target-hole"></div>
-
-              <div class="target" id="target">
-                <div class="target-core"></div>
-                <img class="target-logo" src="https://raw.githubusercontent.com/axionteam645/axion-dashboard/main/axion-logo.png" alt="AXION Symbol">
-                <div class="target-mouth"></div>
-                <div class="target-hit"></div>
-              </div>
-            </div>
-
-            <div class="hammer-wrap" id="hammer">
-              <div class="hammer-head"></div>
-              <div class="hammer-handle"></div>
-            </div>
-          </div>
-
-          <div class="controls">
-            <div class="meter-card">
-              <div class="meter-head">
-                <div>
-                  <strong>Power Timing Meter</strong>
-                  <div class="muted">Press <strong>Hammer Strike</strong> while the target is visible.</div>
-                </div>
-                <div class="muted" id="meterState">Idle</div>
-              </div>
-
-              <div class="meter" aria-label="timing meter">
-                <div class="zones">
-                  <div class="z-red"></div>
-                  <div class="z-yellow"></div>
-                  <div class="z-green"></div>
-                  <div class="z-green2"></div>
-                  <div class="z-gold"></div>
-                </div>
-                <div class="marker" id="marker"></div>
-              </div>
-
-              <div class="legend">
-                <div class="legend-item">Red<strong>-12 AX</strong></div>
-                <div class="legend-item">Yellow<strong>+4 AX</strong></div>
-                <div class="legend-item">Green<strong>+10 AX</strong></div>
-                <div class="legend-item">Boost<strong>+18 AX</strong></div>
-                <div class="legend-item">Gold<strong>+32 AX</strong></div>
-              </div>
-
-              <div class="action-row">
-                <button class="btn btn-primary" id="startBtn">Start Round</button>
-                <button class="btn btn-secondary" id="hitBtn" disabled>Hammer Strike</button>
-                <button class="btn btn-dark" id="resetBtn">Reset Demo</button>
-              </div>
-
-              <div class="result-box">
-                <div class="result-panel">
-                  <div class="status idle" id="resultStatus">Waiting for demo AX load</div>
-                  <div class="status-text" id="resultText">Load balance, start a round, then strike when the target pops up. Better timing means bigger AX rewards.</div>
-                </div>
-
-                <div class="feed-panel">
-                  <div class="title-row" style="margin-bottom:10px;">
-                    <h3>Recent Rounds</h3>
-                    <span class="muted">Live log</span>
-                  </div>
-                  <div class="feed-list" id="feedList"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="footer-note">AXION Hammer Demo • Visual gameplay prototype only.</div>
-          </div>
-        </div>
-      </main>
-    </section>
-  </div>
-
-  <script>
-    const state = {
-      balance: 0,
-      round: 0,
-      wins: 0,
-      losses: 0,
-      combo: 0,
-      bestCombo: 0,
-      selectedAmount: 100,
-      markerPos: 10,
-      markerDir: 1,
-      meterRunning: false,
-      targetVisible: false,
-      roundActive: false,
-      resolved: false,
-      meterFrame: null,
-      targetDownTimeout: null
-    };
-
-    const walletBalance = document.getElementById('walletBalance');
-    const comboValue = document.getElementById('comboValue');
-    const bestComboValue = document.getElementById('bestComboValue');
-    const winsValue = document.getElementById('winsValue');
-    const lossesValue = document.getElementById('lossesValue');
-    const roundValue = document.getElementById('roundValue');
-    const resultStatus = document.getElementById('resultStatus');
-    const resultText = document.getElementById('resultText');
-    const marker = document.getElementById('marker');
-    const meterState = document.getElementById('meterState');
-    const target = document.getElementById('target');
-    const hammer = document.getElementById('hammer');
-    const feedList = document.getElementById('feedList');
-    const flash = document.getElementById('flash');
-    const floatingText = document.getElementById('floatingText');
-    const startBtn = document.getElementById('startBtn');
-    const hitBtn = document.getElementById('hitBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const customAmount = document.getElementById('customAmount');
-    const loadSelectedBtn = document.getElementById('loadSelectedBtn');
-    const loadCustomBtn = document.getElementById('loadCustomBtn');
-    const pills = [...document.querySelectorAll('.pill')];
-
-    function updateUI() {
-      walletBalance.textContent = `${Math.max(0, Math.floor(state.balance))} AX`;
-      comboValue.textContent = `x${state.combo}`;
-      bestComboValue.textContent = state.bestCombo;
-      winsValue.textContent = state.wins;
-      lossesValue.textContent = state.losses;
-      roundValue.textContent = state.round;
-      startBtn.disabled = state.roundActive || state.balance <= 0;
-      hitBtn.disabled = !state.roundActive;
-    }
-
-    function setMessage(status, text, mode = 'idle') {
-      resultStatus.textContent = status;
-      resultStatus.className = `status ${mode}`;
-      resultText.textContent = text;
-    }
-
-    function addFeed(text, delta) {
-      const item = document.createElement('div');
-      item.className = 'feed-item';
-      const deltaClass = delta >= 0 ? 'feed-plus' : 'feed-minus';
-      const sign = delta >= 0 ? '+' : '';
-      item.innerHTML = `<span>${text}</span><span class="${deltaClass}">${sign}${delta} AX</span>`;
-      feedList.prepend(item);
-      while (feedList.children.length > 8) {
-        feedList.removeChild(feedList.lastChild);
-      }
-    }
-
-    function showFloating(delta) {
-      floatingText.textContent = `${delta >= 0 ? '+' : ''}${delta} AX`;
-      floatingText.className = `floating show ${delta >= 0 ? 'plus' : 'minus'}`;
-      setTimeout(() => {
-        floatingText.className = `floating ${delta >= 0 ? 'plus' : 'minus'}`;
-      }, 900);
-    }
-
-    function flashArena() {
-      flash.classList.remove('show');
-      void flash.offsetWidth;
-      flash.classList.add('show');
-    }
-
-    function swingHammer() {
-      hammer.classList.remove('swing');
-      void hammer.offsetWidth;
-      hammer.classList.add('swing');
-      setTimeout(() => hammer.classList.remove('swing'), 120);
-    }
-
-    function hitTargetEffect() {
-      target.classList.remove('hit');
-      void target.offsetWidth;
-      target.classList.add('hit');
-      setTimeout(() => target.classList.remove('hit'), 260);
-    }
-
-    function setTargetVisible(visible) {
-      state.targetVisible = visible;
-      target.classList.toggle('up', visible);
-    }
-
-    function stopMeter() {
-      state.meterRunning = false;
-      if (state.meterFrame) cancelAnimationFrame(state.meterFrame);
-      state.meterFrame = null;
-    }
-
-    function animateMeter() {
-      if (!state.meterRunning) return;
-      state.markerPos += state.markerDir * 1.35;
-
-      if (state.markerPos >= 99) {
-        state.markerPos = 99;
-        state.markerDir = -1;
-      }
-      if (state.markerPos <= 1) {
-        state.markerPos = 1;
-        state.markerDir = 1;
-      }
-
-      marker.style.left = `${state.markerPos}%`;
-      state.meterFrame = requestAnimationFrame(animateMeter);
-    }
-
-    function getZoneOutcome(pos) {
-      if (pos < 18) return { label: 'Red Zone', delta: -12, win: false };
-      if (pos < 44) return { label: 'Yellow Zone', delta: 4, win: true };
-      if (pos < 72) return { label: 'Green Zone', delta: 10, win: true };
-      if (pos < 90) return { label: 'Boost Zone', delta: 18, win: true };
-      return { label: 'Gold Zone', delta: 32, win: true };
-    }
-
-    function resolveRound(delta, zoneLabel, reason, win) {
-      if (state.resolved) return;
-
-      state.resolved = true;
-      state.roundActive = false;
-      stopMeter();
-      clearTimeout(state.targetDownTimeout);
-      setTargetVisible(false);
-
-      state.balance += delta;
-      if (state.balance < 0) state.balance = 0;
-
-      if (win) {
-        state.wins += 1;
-        state.combo += 1;
-        state.bestCombo = Math.max(state.bestCombo, state.combo);
-
-        const comboBonus = state.combo >= 3 ? 2 * Math.min(state.combo, 5) : 0;
-        if (comboBonus > 0) {
-          state.balance += comboBonus;
-          delta += comboBonus;
-          reason += ` Combo bonus +${comboBonus} AX.`;
-        }
-
-        setMessage(`${zoneLabel}!`, `${reason} Your timing paid off.`, 'win');
-      } else {
-        state.losses += 1;
-        state.combo = 0;
-        setMessage(`${zoneLabel}`, `${reason} Bad timing cost you AX.`, 'lose');
-      }
-
-      swingHammer();
-      flashArena();
-      if (win) hitTargetEffect();
-      showFloating(delta);
-      addFeed(`Round ${state.round}: ${zoneLabel}`, delta);
-      meterState.textContent = 'Round complete';
-      updateUI();
-    }
-
-    function startRound() {
-      if (state.balance <= 0 || state.roundActive) return;
-
-      state.round += 1;
-      state.roundActive = true;
-      state.resolved = false;
-      meterState.textContent = 'Charging';
-      state.markerPos = 10 + Math.random() * 20;
-      state.markerDir = Math.random() > 0.5 ? 1 : -1;
-      marker.style.left = `${state.markerPos}%`;
-      setTargetVisible(false);
-      updateUI();
-
-      setMessage('Round started', 'Wait for the target to emerge, then strike while watching the timing meter.', 'idle');
-
-      const appearDelay = 600 + Math.random() * 900;
-      const visibleDuration = 1100 + Math.random() * 700;
-
-      state.meterRunning = true;
-      animateMeter();
-
-      setTimeout(() => {
-        if (!state.roundActive || state.resolved) return;
-
-        setTargetVisible(true);
-        meterState.textContent = 'Target visible';
-
-        state.targetDownTimeout = setTimeout(() => {
-          if (!state.resolved) {
-            resolveRound(-15, 'Missed Target', 'You failed to strike before the target disappeared.', false);
-          }
-        }, visibleDuration);
-      }, appearDelay);
-    }
-
-    function strike() {
-      if (!state.roundActive || state.resolved) return;
-
-      swingHammer();
-
-      if (!state.targetVisible) {
-        resolveRound(-15, 'Empty Swing', 'You struck before the target appeared.', false);
-        return;
-      }
-
-      const outcome = getZoneOutcome(state.markerPos);
-      resolveRound(outcome.delta, outcome.label, `Meter stopped at ${state.markerPos.toFixed(0)}%.`, outcome.win);
-    }
-
-    function resetDemo() {
-      stopMeter();
-      clearTimeout(state.targetDownTimeout);
-
-      state.balance = 0;
-      state.round = 0;
-      state.wins = 0;
-      state.losses = 0;
-      state.combo = 0;
-      state.bestCombo = 0;
-      state.markerPos = 10;
-      state.markerDir = 1;
-      state.meterRunning = false;
-      state.targetVisible = false;
-      state.roundActive = false;
-      state.resolved = false;
-
-      marker.style.left = '10%';
-      meterState.textContent = 'Idle';
-      setTargetVisible(false);
-      feedList.innerHTML = '';
-      setMessage('Waiting for demo AX load', 'Load balance, start a round, then strike when the target pops up. Better timing means bigger AX rewards.', 'idle');
-      updateUI();
-    }
-
-    function loadAX(amount) {
-      const value = Number(amount);
-      if (!Number.isFinite(value) || value <= 0) return;
-
-      state.balance += Math.floor(value);
-      setMessage('Demo AX loaded', `${Math.floor(value)} AX added to your in-game balance. You can now start smashing.`, 'win');
-      addFeed('Demo AX loaded', Math.floor(value));
-      updateUI();
-    }
-
-    pills.forEach((pill) => {
-      pill.addEventListener('click', () => {
-        pills.forEach((p) => p.classList.remove('active'));
-        pill.classList.add('active');
-        state.selectedAmount = Number(pill.dataset.amount);
-      });
-    });
-
-    pills[0].classList.add('active');
-
-    loadSelectedBtn.addEventListener('click', () => loadAX(state.selectedAmount));
-    loadCustomBtn.addEventListener('click', () => loadAX(customAmount.value));
-    customAmount.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') loadAX(customAmount.value);
-    });
-
-    startBtn.addEventListener('click', startRound);
-    hitBtn.addEventListener('click', strike);
-    resetBtn.addEventListener('click', resetDemo);
-
-    document.addEventListener('keydown', (e) => {
-      if (e.code === 'Space') {
-        e.preventDefault();
-        if (state.roundActive) strike();
-      }
-      if (e.key.toLowerCase() === 's') {
-        if (!state.roundActive && state.balance > 0) startRound();
-      }
-    });
-
-    resetDemo();
-  </script>
-</body>
-</html>
+            <div class="k">Score</div>
+            <div class="v" id="score
